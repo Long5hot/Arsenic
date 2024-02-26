@@ -1,15 +1,29 @@
+#include <common/arsenic_error>
+#include <common/arsenic_io>
 #include <iostream>
 #include <stdlib.h>
-#include <arsenic_io>
 
-int main(int argc, char *argv[]) {
+namespace arsenic {
+  
 
-  if(argc > 2) {
+errorReporting arsenicError;
+
+int arsenic_main(int argc, char *argv[]) {
+
+  if (argc > 2) {
     std::cout << "Usage: arsenic [filename]" << std::endl;
     exit(EXIT_FAILURE);
   } else if (argc == 2) {
-    arsenic::runFile(argv[1]);
+    runFile(argv[1]);
   } else {
-    arsenic::runPrompt();
+    runPrompt();
   }
+  return 0;
+}
+
+}
+
+int main (int argc, char *argv[]) {
+  arsenic::arsenic_main(argc, argv);
+  return 0;
 }

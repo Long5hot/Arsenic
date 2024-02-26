@@ -5,12 +5,17 @@
 #include <sys/types.h>
 #include <cerrno>
 #include <iostream>
-
+#include <common/arsenic_io>
+#include <common/arsenic_error>
+#include <Lex/lex.h>
 
 namespace arsenic {
 
+void run(const char * MemoryBuffer);
+
 void runFile(const char * FileName) {
 
+  InitializeErrorReporting();
 
   int FD = open(FileName, O_RDONLY);
     // open(2) returns a -1 if the file could not be opened.
@@ -54,12 +59,11 @@ void runFile(const char * FileName) {
     Offset += ReadBytes;
   } while (ReadBytes != 0);
 
-  char *Ptr = MemoryBuffer;
-  while (*Ptr != '\0') {
-    std::cout << *Ptr;
-    ++Ptr;
+  run(MemoryBuffer);
+
+  if(arsenicError.hadError()) {
+    exit(1);
   }
-  std::cout << "\"" << std::endl;
 
   delete MemoryBuffer;
 
@@ -71,12 +75,19 @@ void runFile(const char * FileName) {
     return;
   }
 
-  return;
-  //run(Buffer);.
 }
 
 void runPrompt() {
   
+  //run(LineBuffer);
+  //Error.clear();
+
 }
-  
+
+void run(const char * MemoryBuffer) {
+
+  Scanner scanner(MemoryBuffer);
+  scanner.scanTokens();
+}
+
 }

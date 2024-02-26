@@ -1,0 +1,30 @@
+#include <string>
+#include <iostream>
+
+namespace arsenic {
+
+class errorReporting {
+
+  bool HadError;
+
+public:
+  void error(int line, std::string Message) { report(line, "", Message); }
+
+  void report(int line, std::string where, std::string Message) {
+    std::cerr << "[line " << line << "]"
+              << " Error" << where << ": " << Message << std::endl;
+
+    HadError = true;
+  }
+
+  bool hadError() { return HadError; }
+
+  void set() { HadError = true; }
+
+  void clear() { HadError = false; }
+};
+
+extern errorReporting arsenicError;
+
+void InitializeErrorReporting();
+} // namespace arsenic
