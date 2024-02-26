@@ -23,3 +23,11 @@ set_target_properties(arsenic PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
 )
 
+# Set compiler flags based on build type
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message("Debug mode")
+else()
+    message("Release mode")
+    target_compile_options(arsenic PRIVATE -O2)
+endif()
+
