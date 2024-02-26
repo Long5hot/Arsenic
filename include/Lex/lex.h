@@ -66,19 +66,19 @@ class Token {
   TokenType type;
   std::string lexeme;
   std::string literal; // Literal Value
-  int line;      // Line number information
-  int location;  // Location from starting of source file
+  int line;            // Line number information
+  int location;        // Location from starting of source file
 
 public:
-  Token(TokenType type, std::string lexeme, std::string literal, int line) : type(type),
-      lexeme(lexeme), literal(literal), line(line) {}
+  Token(TokenType type, std::string lexeme, std::string literal, int line)
+      : type(type), lexeme(lexeme), literal(literal), line(line) {}
 
   std::string toString() { return lexeme; }
 
-  TokenType getType() {return type;}
-  std::string getLexeme() {return lexeme;}
-  std::string getLiteralValue() {return literal;}
-  int getLine() {return line;}
+  TokenType getType() { return type; }
+  std::string getLexeme() { return lexeme; }
+  std::string getLiteralValue() { return literal; }
+  int getLine() { return line; }
 };
 
 class Scanner {
@@ -116,23 +116,23 @@ class Scanner {
   }
 
 public:
-  Scanner(const char * BufferSource)
+  Scanner(const char *BufferSource)
       : source(BufferSource), keywords({{"and", AND},
-                                  {"class", CLASS},
-                                  {"else", ELSE},
-                                  {"false", FALSE},
-                                  {"for", FOR},
-                                  {"fun", FUN},
-                                  {"if", IF},
-                                  {"nil", NIL},
-                                  {"or", OR},
-                                  {"print", PRINT},
-                                  {"return", RETURN},
-                                  {"super", SUPER},
-                                  {"this", THIS},
-                                  {"true", TRUE},
-                                  {"var", VAR},
-                                  {"while", WHILE}}) {}
+                                        {"class", CLASS},
+                                        {"else", ELSE},
+                                        {"false", FALSE},
+                                        {"for", FOR},
+                                        {"fun", FUN},
+                                        {"if", IF},
+                                        {"nil", NIL},
+                                        {"or", OR},
+                                        {"print", PRINT},
+                                        {"return", RETURN},
+                                        {"super", SUPER},
+                                        {"this", THIS},
+                                        {"true", TRUE},
+                                        {"var", VAR},
+                                        {"while", WHILE}}) {}
 
   std::list<Token> scanTokens();
 

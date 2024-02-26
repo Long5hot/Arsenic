@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 namespace arsenic {
-  
 
 errorReporting arsenicError;
 
@@ -21,9 +20,9 @@ int arsenic_main(int argc, char *argv[]) {
   return 0;
 }
 
-}
+} // namespace arsenic
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   arsenic::arsenic_main(argc, argv);
   return 0;
 }

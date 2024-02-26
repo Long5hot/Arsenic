@@ -3,6 +3,5 @@
 namespace arsenic {
 
 void InitializeErrorReporting() { arsenicError.clear(); }
-  
-}
 
+} // namespace arsenic

@@ -1,7 +1,7 @@
-#include <string_view>
-#include <iostream>
 #include <Lex/lex.h>
 #include <common/arsenic_error>
+#include <iostream>
+#include <string_view>
 
 namespace arsenic {
 
@@ -10,54 +10,22 @@ namespace arsenic {
 // to add same here as well.
 // DO NOT TRY TO CHANGE THE ORDER OF BELOW ARRAY INDICES. #Hack
 
-std::string_view strTokenTypes[] = {  // Single-character tokens
-  "LEFT_PAREN",
-  "RIGHT_PAREN",
-  "LEFT_BRACE",
-  "RIGHT_BRACE",
-  "COMMA",
-  "DOT",
-  "MINUS",
-  "PLUS",
-  "SEMICOLON",
-  "SLASH",
-  "STAR",
+std::string_view strTokenTypes[] = { // Single-character tokens
+    "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT",
+    "MINUS", "PLUS", "SEMICOLON", "SLASH", "STAR",
 
-  // One or two character tokens
-  "BANG",
-  "BANG_EQUAL",
-  "EQUAL",
-  "EQUAL_EQUAL",
-  "GREATER",
-  "GREATER_EQUAL",
-  "LESS",
-  "LESS_EQUAL",
+    // One or two character tokens
+    "BANG", "BANG_EQUAL", "EQUAL", "EQUAL_EQUAL", "GREATER", "GREATER_EQUAL",
+    "LESS", "LESS_EQUAL",
 
-  // Literals
-  "IDENTIFIER",
-  "STRING",
-  "NUMBER",
+    // Literals
+    "IDENTIFIER", "STRING", "NUMBER",
 
-  // KeyWords
-  "AND",
-  "OR",
-  "IF",
-  "ELSE",
-  "CLASS",
-  "TRUE",
-  "FALSE",
-  "FUN",
-  "NIL",
-  "PRINT",
-  "RETURN",
-  "SUPER",
-  "VAR",
-  "FOR",
-  "WHILE",
-  "THIS",
+    // KeyWords
+    "AND", "OR", "IF", "ELSE", "CLASS", "TRUE", "FALSE", "FUN", "NIL", "PRINT",
+    "RETURN", "SUPER", "VAR", "FOR", "WHILE", "THIS",
 
-  "__EOF"
-  };
+    "__EOF"};
 
 bool Scanner::doesMatch(char expected) {
   if (isAtEnd())
@@ -208,8 +176,10 @@ std::list<Token> Scanner::scanTokens() {
 }
 
 void Scanner::dump() {
-  for (auto & it : tokens)
-    std::cout << it.getLine() << " " << it.getLexeme() << " " << it.getLiteralValue() << " " << strTokenTypes[it.getType()] << std::endl;
+  for (auto &it : tokens)
+    std::cout << it.getLine() << " " << it.getLexeme() << " "
+              << it.getLiteralValue() << " " << strTokenTypes[it.getType()]
+              << std::endl;
 }
 
 } // namespace arsenic

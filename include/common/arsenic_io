@@ -1,5 +1,5 @@
 
 namespace arsenic {
-    void runFile(const char *);
-    void runPrompt();
-}
+void runFile(const char *);
+void runPrompt();
+} // namespace arsenic
