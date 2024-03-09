@@ -56,7 +56,7 @@ enum TokenType {
   WHILE,
   THIS,
 
-  __EOF
+  __EOF__
 };
 
 extern std::string_view strTokenTypes[];
@@ -70,15 +70,19 @@ class Token {
   int location;        // Location from starting of source file
 
 public:
-  Token(TokenType type, std::string lexeme, std::string literal, int line)
-      : type(type), lexeme(lexeme), literal(literal), line(line) {}
+  Token(TokenType type, std::string lexeme, std::string literal, int line,
+        int location)
+      : type(type), lexeme(lexeme), literal(literal), line(line),
+        location(location) {}
 
   std::string toString() { return lexeme; }
 
   TokenType getType() { return type; }
+
   std::string getLexeme() { return lexeme; }
   std::string getLiteralValue() { return literal; }
   int getLine() { return line; }
+  int getFileLocation() { return location; }
 };
 
 class Scanner {
@@ -115,6 +119,11 @@ class Scanner {
     return source.at(current + 1);
   }
 
+  void addToken(TokenType type, std::string literal = "") {
+    std::string text = source.substr(start, current - start);
+    tokens.push_back(Token(type, text, literal, line, start));
+  }
+
 public:
   Scanner(const char *BufferSource)
       : source(BufferSource), keywords({{"and", AND},
@@ -135,11 +144,6 @@ public:
                                         {"while", WHILE}}) {}
 
   std::list<Token> scanTokens();
-
-  void addToken(TokenType type, std::string literal = "") {
-    std::string text = source.substr(start, start - current);
-    tokens.push_back(Token(type, text, literal, line));
-  }
 
   void dump();
 };

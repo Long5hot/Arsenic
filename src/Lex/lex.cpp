@@ -25,7 +25,7 @@ std::string_view strTokenTypes[] = { // Single-character tokens
     "AND", "OR", "IF", "ELSE", "CLASS", "TRUE", "FALSE", "FUN", "NIL", "PRINT",
     "RETURN", "SUPER", "VAR", "FOR", "WHILE", "THIS",
 
-    "__EOF"};
+    "__EOF__"};
 
 bool Scanner::doesMatch(char expected) {
   if (isAtEnd())
@@ -52,7 +52,8 @@ void Scanner::scanString() {
   advance();
 
   // Trim the surrounding quotes.
-  std::string Value = source.substr(start + 1, current - 1);
+  // 2 for starting " and closing"
+  std::string Value = source.substr(start + 1, current - start - 2);
   addToken(STRING, Value);
 }
 
@@ -168,7 +169,7 @@ std::list<Token> Scanner::scanTokens() {
     scanToken();
   }
 
-  tokens.push_back(Token(__EOF, "", "End of File", line));
+  tokens.push_back(Token(__EOF__, "", "End of File", line, start));
 
   dump();
 
@@ -178,8 +179,8 @@ std::list<Token> Scanner::scanTokens() {
 void Scanner::dump() {
   for (auto &it : tokens)
     std::cout << it.getLine() << " " << it.getLexeme() << " "
-              << it.getLiteralValue() << " " << strTokenTypes[it.getType()]
-              << std::endl;
+              << it.getFileLocation() << " " << it.getLiteralValue() << " "
+              << strTokenTypes[it.getType()] << std::endl;
 }
 
 } // namespace arsenic
