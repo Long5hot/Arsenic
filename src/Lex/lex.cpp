@@ -1,7 +1,9 @@
-#include <Lex/lex.h>
-#include <common/arsenic_error>
-#include <iostream>
+#include <charconv>
 #include <string_view>
+#include <variant>
+#include <iostream>
+#include <common/arsenic_error>
+#include <Lex/lex.h>
 
 namespace arsenic {
 
@@ -79,8 +81,14 @@ void Scanner::scanNumber() {
     while (isDigit(peek()))
       advance();
   }
-
-  addToken(NUMBER, source.substr(start, current - start));
+  double result;
+  std::string tempString = source.substr(start, current - start);
+  auto [ptr, ec] = std::from_chars(
+      tempString.data(), tempString.data() + tempString.size(), result);
+  if (ec == std::errc{})
+    addToken(NUMBER, result);
+  else
+    arsenicError.error(line, "Incorrect Number");
 }
 
 void Scanner::scanToken() {
@@ -177,10 +185,15 @@ std::list<Token> Scanner::scanTokens() {
 }
 
 void Scanner::dump() {
-  for (auto &it : tokens)
+  for (auto &it : tokens) {
     std::cout << it.getLine() << " " << it.getLexeme() << " "
-              << it.getFileLocation() << " " << it.getLiteralValue() << " "
-              << strTokenTypes[it.getType()] << std::endl;
+              << it.getFileLocation() << " ";
+    if (std::holds_alternative<std::string>(it.getLiteralValue()))
+      std::cout << std::get<std::string>(it.getLiteralValue()) << " ";
+    else if (std::holds_alternative<double>(it.getLiteralValue()))
+      std::cout << std::get<double>(it.getLiteralValue()) << " ";
+    std::cout << strTokenTypes[it.getType()] << std::endl;
+  }
 }
 
 } // namespace arsenic

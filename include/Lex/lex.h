@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <variant>
 
 namespace arsenic {
 
@@ -61,16 +62,18 @@ enum TokenType {
 
 extern std::string_view strTokenTypes[];
 
+using literal_variant = std::variant<std::monostate, std::string, double>;
+
 class Token {
 
   TokenType type;
   std::string lexeme;
-  std::string literal; // Literal Value
-  int line;            // Line number information
-  int location;        // Location from starting of source file
+  literal_variant literal; // Literal Value
+  int line;              // Line number information
+  int location;          // Location from starting of source file
 
 public:
-  Token(TokenType type, std::string lexeme, std::string literal, int line,
+  Token(TokenType type, std::string lexeme, literal_variant literal, int line,
         int location)
       : type(type), lexeme(lexeme), literal(literal), line(line),
         location(location) {}
@@ -80,7 +83,7 @@ public:
   TokenType getType() { return type; }
 
   std::string getLexeme() { return lexeme; }
-  std::string getLiteralValue() { return literal; }
+  literal_variant getLiteralValue() { return literal; }
   int getLine() { return line; }
   int getFileLocation() { return location; }
 };
@@ -119,7 +122,7 @@ class Scanner {
     return source.at(current + 1);
   }
 
-  void addToken(TokenType type, std::string literal = "") {
+  void addToken(TokenType type, literal_variant literal = std::monostate{}) {
     std::string text = source.substr(start, current - start);
     tokens.push_back(Token(type, text, literal, line, start));
   }
