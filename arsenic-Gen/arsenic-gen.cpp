@@ -3,6 +3,17 @@
 #include <string>
 #include <utility>
 
+// Currently Data-Structure is std::list<std::pair<std::string, std::string>>
+// This can be improved.
+//
+// TODO : Make Data-Structure std::list<std::string, std::list<std::string>>
+//                                    "Binary : Expr left, Token operator, Expr
+//                                    right", "Grouping : Expr expression",
+//                                    "Literal : Object value",
+//                                    "Unary : Token operator, Expr right"
+//
+// i.e. Remove generating table twice
+//
 namespace arsenic_gen {
 
 class generateGrammer {
@@ -10,13 +21,13 @@ class generateGrammer {
   std::string outputDir;
   std::string baseName;
   std::string fileContent;
-  const char * whitespaces = " \t\f\v\n\r";
+  const char *whitespaces = " \t\f\v\n\r";
   using methodField = std::pair<std::string, std::string>;
   using fieldTable = std::list<methodField>;
+  using typeTable = fieldTable;
+  using typeIter = methodField;
 
 public:
-
-
   fieldTable generateFieldTable(const std::string &classFields) {
 
     fieldTable table;
@@ -24,9 +35,9 @@ public:
     std::size_t lastComma = 0;
     std::size_t foundSpace = classFields.find(' ');
     while (foundComma != std::string::npos) {
-      table.push_back(
-          std::make_pair(classFields.substr(lastComma, foundSpace - lastComma),
-                         classFields.substr(foundSpace + 1, foundComma - foundSpace - 1)));
+      table.push_back(std::make_pair(
+          classFields.substr(lastComma, foundSpace - lastComma),
+          classFields.substr(foundSpace + 1, foundComma - foundSpace - 1)));
       lastComma = foundComma + 1;
       foundComma = classFields.find(',', lastComma);
       foundSpace = classFields.find(' ', lastComma + 1);
@@ -40,8 +51,31 @@ public:
     return table;
   }
 
-  void defineType(const std::string &className,
-                  const std::string &classFields) {
+  typeTable generateTypeTable(const std::list<std::string> &grammerClasses) {
+
+    typeTable table;
+
+    for (std::string classes : grammerClasses) {
+      std::size_t colonPlace = classes.find(':');
+      std::string className = classes.substr(0, colonPlace - 1);
+      className.erase(className.find_last_not_of(whitespaces) +
+                      1); // Remove trailing whitespaces.
+
+      std::string classFields = classes.substr(colonPlace + 1);
+      // Remove leading whitespaces.
+      classFields.erase(0, classFields.find_first_not_of(whitespaces));
+      // Remove trailing whitespaces.
+      classFields.erase(classFields.find_last_not_of(whitespaces) + 1);
+      // defineType(className, classFields);
+      table.push_back(std::make_pair(className, classFields));
+    }
+    return table;
+  }
+
+  void defineVisitor()
+
+      void defineType(const std::string &className,
+                      const std::string &classFields) {
 
     fieldTable fields = generateFieldTable(classFields);
 
@@ -68,19 +102,10 @@ public:
     fileContent.append("class " + baseName + " {\n\n");
     fileContent.append("}\n\n");
 
-    for (std::string classes : grammerClasses) {
-      std::size_t colonPlace = classes.find(':');
-      std::string className = classes.substr(0, colonPlace - 1);
-      className.erase(className.find_last_not_of(whitespaces) +
-                      1); // Remove trailing whitespaces.
+    typeTable grammerTypeTable = generateTypeTable(grammerClasses);
 
-      std::string classFields = classes.substr(colonPlace + 1);
-      // Remove leading whitespaces.
-      classFields.erase(0, classFields.find_first_not_of(whitespaces));
-      // Remove trailing whitespaces.
-      classFields.erase(classFields.find_last_not_of(whitespaces)+1);
-      defineType(className, classFields);
-    }
+    for (const typeIter &iter : grammerTypeTable)
+      defineType(iter.first, iter.second);
 
     std::cout << fileContent << std::endl;
   }
@@ -100,6 +125,7 @@ int main(int argc, char *argv[]) {
 
   arsenic_gen::generateGrammer grm(argv[1], "Expr");
   grm.defineGrammer({"Binary   : Expr left, Token operator, Expr right",
-                     "Grouping : Expr expression", "Literal  : literal_variant literal_value",
+                     "Grouping : Expr expression",
+                     "Literal  : literal_variant literal_value",
                      "Unary    : Token operator, Expr expression"});
 }
