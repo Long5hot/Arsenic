@@ -1,33 +1,42 @@
+#include <fstream>
 #include <iostream>
 #include <list>
 #include <string>
 #include <utility>
 
+//  Thought was to store data in the form of
+//  std::list<std::pair<std::string,
+//  std::list<std::pair<std::string,std::string>>>> i.e. Remove generating table
+//  twice. But it's not easy to understand and need to use auto every time to
+//  create iterator. Not easy to debug as well. Reason being, generating table
+//  twice.
+
 // Currently Data-Structure is std::list<std::pair<std::string, std::string>>
-// This can be improved.
+// Which holds data in the manner of
+//            "Binary : Expr left, Token oprtr, Expr  right"
+//            "Grouping : Expr expression",
+//            "Literal : Object value",
+//            "Unary : Token oprtr, Expr right"
 //
-// TODO : Make Data-Structure std::list<std::string, std::list<std::string>>
-//                                    "Binary : Expr left, Token operator, Expr
-//                                    right", "Grouping : Expr expression",
-//                                    "Literal : Object value",
-//                                    "Unary : Token operator, Expr right"
+// Again, second time table is generated in the same format like
+// std::list<std::pair<std::string, std::string>>
 //
-// i.e. Remove generating table twice
+// TODO : Thinking of creating new data structure which can hold this format and
+// we don't need to parse this table twice.
 //
 namespace arsenic_gen {
 
 class generateGrammer {
 
-  std::string outputDir;
-  std::string baseName;
-  std::string fileContent;
-  const char *whitespaces = " \t\f\v\n\r";
   using methodField = std::pair<std::string, std::string>;
   using fieldTable = std::list<methodField>;
   using typeTable = fieldTable;
   using typeIter = methodField;
+  std::string file;
+  std::string baseName = "Expr";
+  std::string fileContent;
+  const char *whitespaces = " \t\f\v\n\r";
 
-public:
   fieldTable generateFieldTable(const std::string &classFields) {
 
     fieldTable table;
@@ -72,10 +81,27 @@ public:
     return table;
   }
 
-  void defineVisitor()
+  void defineVisitor(typeTable &table_t) {
 
-      void defineType(const std::string &className,
-                      const std::string &classFields) {
+    // Declare prototypes to be used.
+    fileContent.append("class " + baseName + ";\n");
+
+    for (const typeIter &type_t : table_t)
+      fileContent.append("class " + type_t.first + ";\n");
+
+    fileContent.append("\n\n");
+    fileContent.append("class Visitor {\n\n");
+    fileContent.append("  virtual ~Visitor() = default;\n\n");
+
+    for (const typeIter &type_t : table_t)
+      fileContent.append("  virtual void visit(const " + type_t.first +
+                         "& ) = 0;\n");
+
+    fileContent.append("};\n\n");
+  }
+
+  void defineType(const std::string &className,
+                  const std::string &classFields) {
 
     fieldTable fields = generateFieldTable(classFields);
 
@@ -92,26 +118,53 @@ public:
     for (const methodField &field : fields)
       fileContent.append(field.second + "(" + field.second + ") ,");
     fileContent.pop_back();
-    fileContent.append("{}\n};\n\n\n");
+    fileContent.append("{}\n\n");
+
+    fileContent.append("  void accept(const Visitor & visitor) {\n");
+    fileContent.append("    visitor.visit(*this);\n  }\n};\n\n");
   }
 
+  void includeHeaders() {
+    fileContent.append("#include <variant>\n");
+    fileContent.append("#include <string>\n");
+    fileContent.append("#include <Lex/lex.h>\n");
+    fileContent.append("\n\n");
+  }
+
+  void usingDirectives() {
+    fileContent.append("using literal_variant = std::variant<std::monostate, "
+                       "std::string, double>;\n\n");
+    fileContent.append("using namespace arsenic;\n\n");
+  }
+
+public:
   void defineGrammer(std::list<std::string> grammerClasses) {
 
     // Initiate writing contentent into buffer and flush the buffer into disk
     // when finished.
-    fileContent.append("class " + baseName + " {\n\n");
-    fileContent.append("}\n\n");
-
     typeTable grammerTypeTable = generateTypeTable(grammerClasses);
+
+    includeHeaders();
+    usingDirectives();
+
+    defineVisitor(grammerTypeTable);
+
+    fileContent.append("class " + baseName + " {\n\n");
+
+    fileContent.append("  virtual void accept(const Visitor &) = 0;\n");
+    fileContent.append("};\n\n");
 
     for (const typeIter &iter : grammerTypeTable)
       defineType(iter.first, iter.second);
-
-    std::cout << fileContent << std::endl;
   }
 
-  generateGrammer(const std::string &outputDir, const std::string &baseName)
-      : outputDir(outputDir), baseName(baseName) {}
+  void generateFile() {
+    std::ofstream file_t(file + ".cpp");
+    file_t << fileContent;
+    file_t.close();
+  }
+
+  generateGrammer(const std::string &file) : file(file) {}
   generateGrammer() = delete;
 };
 } // namespace arsenic_gen
@@ -119,13 +172,15 @@ public:
 int main(int argc, char *argv[]) {
 
   if (argc < 2) {
-    std::cout << "Usage: arsenic-gen <output directory>" << std::endl;
+    std::cout << "Usage: arsenic-gen <output filename>" << std::endl;
     exit(0);
   }
 
-  arsenic_gen::generateGrammer grm(argv[1], "Expr");
-  grm.defineGrammer({"Binary   : Expr left, Token operator, Expr right",
+  arsenic_gen::generateGrammer grm(argv[1]);
+  grm.defineGrammer({"Binary   : Expr left, Token oprtr, Expr right",
                      "Grouping : Expr expression",
                      "Literal  : literal_variant literal_value",
-                     "Unary    : Token operator, Expr expression"});
+                     "Unary    : Token oprtr, Expr expression"});
+
+  grm.generateFile();
 }
