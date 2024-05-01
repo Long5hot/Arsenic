@@ -1,8 +1,11 @@
-#include <list>
+#ifndef __LEXH__
+#define __LEXH__
+
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <variant>
+#include <vector>
 
 namespace arsenic {
 
@@ -69,8 +72,8 @@ class Token {
   TokenType type;
   std::string lexeme;
   literal_variant literal; // Literal Value
-  int line;              // Line number information
-  int location;          // Location from starting of source file
+  int line;                // Line number information
+  int location;            // Location from starting of source file
 
 public:
   Token(TokenType type, std::string lexeme, literal_variant literal, int line,
@@ -90,7 +93,7 @@ public:
 
 class Scanner {
   std::string source;
-  std::list<Token> tokens;
+  std::vector<Token> tokens;
   std::unordered_map<std::string, TokenType> keywords;
   int start = 0;
   int current = 0;
@@ -146,8 +149,10 @@ public:
                                         {"var", VAR},
                                         {"while", WHILE}}) {}
 
-  std::list<Token> scanTokens();
+  std::vector<Token> scanTokens();
 
   void dump();
 };
 } // namespace arsenic
+
+#endif // __LEXH__

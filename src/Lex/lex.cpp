@@ -3,7 +3,7 @@
 #include <variant>
 #include <iostream>
 #include <common/arsenic_error>
-#include <Lex/lex.h>
+#include <Lex/Lex.h>
 
 namespace arsenic {
 
@@ -163,12 +163,12 @@ void Scanner::scanToken() {
     else if (isAlpha(c))
       identifier();
     else
-      arsenicError.error(line, "Unexpected character " + c);
+      arsenicError.error(line, "Unexpected character " + std::string().append(1, c));
     break;
   }
 }
 
-std::list<Token> Scanner::scanTokens() {
+std::vector<Token> Scanner::scanTokens() {
 
   while (!isAtEnd()) {
     // We are at the beginning of the next lexeme.

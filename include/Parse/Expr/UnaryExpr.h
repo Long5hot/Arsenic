@@ -1,7 +1,7 @@
 #ifndef __UNARY_EXPR__
 #define __UNARY_EXPR__
 
-#include <Lex/lex.h>
+#include <Lex/Lex.h>
 #include <Parse/Expr/Expr.h>
 #include <Parse/Expr/ExprVisitor.h>
 #include <memory>
@@ -14,12 +14,13 @@ class UnaryExpr : public Expr {
   std::unique_ptr<Expr> expression;
 
 public:
-  UnaryExpr(Token op, std::unique_ptr<Expr> expr)
-      : operator_t(op), expression(std::move(expr)) {}
+  UnaryExpr(Token op, std::unique_ptr<Expr> expr);
 
-  std::any accept(const ExprVisitor<std::any> &visitor) const override {
-    return visitor.visit(*this);
-  }
+  std::any accept(const ExprVisitor<std::any> &visitor) const override;
+
+  Token getOpLexeme() const;
+
+  const std::unique_ptr<Expr>& getExpression() const;
 };
 
 } // namespace arsenic

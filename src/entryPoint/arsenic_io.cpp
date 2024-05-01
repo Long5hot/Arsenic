@@ -1,13 +1,15 @@
-#include <Lex/lex.h>
+#include <Lex/Lex.h>
 #include <cerrno>
 #include <common/arsenic_error>
 #include <common/arsenic_io>
 #include <fcntl.h>
 #include <iostream>
+#include <memory>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <system_error>
 #include <unistd.h>
+#include <Parse/Parse.h>
 
 namespace arsenic {
 
@@ -82,7 +84,11 @@ void runPrompt() {
 void run(const char *MemoryBuffer) {
 
   Scanner scanner(MemoryBuffer);
-  scanner.scanTokens();
+
+  std::vector<Token> tokens = scanner.scanTokens();
+  std::unique_ptr<Parser> parser = std::make_unique<Parser>(tokens);
+  std::unique_ptr<Expr> expression = parser->parse();
+  
 }
 
 } // namespace arsenic

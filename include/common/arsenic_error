@@ -1,5 +1,9 @@
+#ifndef __ARSENIC_ERROR__
+#define __ARSENIC_ERROR__
+
 #include <iostream>
 #include <string>
+#include <Lex/Lex.h>
 
 namespace arsenic {
 
@@ -8,23 +12,22 @@ class errorReporting {
   bool HadError;
 
 public:
-  void error(int line, std::string Message) { report(line, "", Message); }
+  void error(int line, const std::string& Message);
 
-  void report(int line, std::string where, std::string Message) {
-    std::cerr << "[line " << line << "]"
-              << " Error" << where << ": " << Message << std::endl;
+  void error(Token token, const std::string& message);
 
-    HadError = true;
-  }
+  void report(int line, std::string where, std::string Message);
 
-  bool hadError() { return HadError; }
+  bool hadError();
 
-  void set() { HadError = true; }
+  void set();
 
-  void clear() { HadError = false; }
+  void clear();
 };
 
 extern errorReporting arsenicError;
 
 void InitializeErrorReporting();
 } // namespace arsenic
+
+#endif // __ARSENIC_ERROR__

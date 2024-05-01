@@ -4,6 +4,7 @@
 #include <Parse/Expr/Expr.h>
 #include <Parse/Expr/ExprVisitor.h>
 #include <any>
+#include <string>
 
 namespace arsenic {
 
@@ -12,12 +13,15 @@ class LiteralExpr : public Expr {
   std::any literal_value;
 
 public:
-  LiteralExpr(std::any value_t) : literal_value(value_t) {}
+  LiteralExpr(std::any value_t);
 
-  std::any accept(const ExprVisitor<std::any> &visitor) const override {
-    return visitor.visit(*this);
-  }
+  std::any accept(const ExprVisitor<std::any> &visitor) const override;
+
+  std::string getLiteralStringValue() const;
+
+  std::any getLiteralValue() const;
 };
 
 } // namespace arsenic
+
 #endif

@@ -25,9 +25,9 @@ set_target_properties(arsenic PROPERTIES
 
 # Set compiler flags based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message("Debug mode")
+    message("-- Debug mode")
 else()
-    message("Release mode")
+    message("-- Release mode")
     target_compile_options(arsenic PRIVATE -O2)
 endif()
 
