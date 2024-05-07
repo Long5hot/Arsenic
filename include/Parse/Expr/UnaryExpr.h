@@ -16,7 +16,7 @@ class UnaryExpr : public Expr {
 public:
   UnaryExpr(Token op, std::unique_ptr<Expr> expr);
 
-  std::any accept(const ExprVisitor<std::any> &visitor) const override;
+  std::any accept(ExprVisitor<std::any> &visitor) override;
 
   Token getOpLexeme() const;
 

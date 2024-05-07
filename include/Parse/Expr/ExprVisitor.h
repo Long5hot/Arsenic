@@ -13,10 +13,10 @@ template <typename R> class ExprVisitor {
 public:
   virtual ~ExprVisitor() = default;
 
-  virtual R visit(const BinaryExpr &) const = 0;
-  virtual R visit(const GroupingExpr &) const = 0;
-  virtual R visit(const LiteralExpr &) const = 0;
-  virtual R visit(const UnaryExpr &) const = 0;
+  virtual R visit(BinaryExpr &) = 0;
+  virtual R visit(GroupingExpr &) = 0;
+  virtual R visit(LiteralExpr &) = 0;
+  virtual R visit(UnaryExpr &) = 0;
 };
 
 } // namespace arsenic

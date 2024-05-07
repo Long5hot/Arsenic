@@ -17,13 +17,13 @@ class BinaryExpr : public Expr {
 public:
   BinaryExpr(std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right);
 
-  std::any accept(const ExprVisitor<std::any> &visitor) const override;
+  std::any accept(ExprVisitor<std::any> &visitor) override;
 
   Token getOpToken() const;
 
-  const std::unique_ptr<Expr>& getLeftExpr() const;
+  std::unique_ptr<Expr>& getLeftExpr() ;
 
-  const std::unique_ptr<Expr>& getRightExpr() const;
+  std::unique_ptr<Expr>& getRightExpr() ;
 };
 } // namespace arsenic
 

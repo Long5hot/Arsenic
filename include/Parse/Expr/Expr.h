@@ -11,7 +11,7 @@ class Expr {
 public:
   virtual ~Expr() = default;
 
-  virtual std::any accept(const ExprVisitor<std::any> &) const = 0;
+  virtual std::any accept(ExprVisitor<std::any> &) = 0;
 };
 } // namespace arsenic
 

@@ -5,7 +5,7 @@ namespace arsenic {
 LiteralExpr::LiteralExpr(std::any value_t) : literal_value(value_t) {}
 
 std::any
-LiteralExpr::accept(const ExprVisitor<std::any> &visitor) const {
+LiteralExpr::accept(ExprVisitor<std::any> &visitor) {
   return visitor.visit(*this);
 }
 

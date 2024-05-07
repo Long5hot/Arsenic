@@ -8,7 +8,7 @@ namespace arsenic {
 GroupingExpr::GroupingExpr(std::unique_ptr<Expr> expression)
     : expression(std::move(expression)) {}
 
-std::any GroupingExpr::accept(const ExprVisitor<std::any>& visitor) const {
+std::any GroupingExpr::accept(ExprVisitor<std::any>& visitor) {
   return visitor.visit(*this);
 }
 

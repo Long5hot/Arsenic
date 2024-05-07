@@ -15,7 +15,7 @@ class LiteralExpr : public Expr {
 public:
   LiteralExpr(std::any value_t);
 
-  std::any accept(const ExprVisitor<std::any> &visitor) const override;
+  std::any accept(ExprVisitor<std::any> &visitor) override;
 
   std::string getLiteralStringValue() const;
 
