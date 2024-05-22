@@ -2,7 +2,7 @@
 #include <string_view>
 #include <variant>
 #include <iostream>
-#include <common/arsenic_error>
+#include <Error/arsenic_error>
 #include <Lex/Lex.h>
 
 namespace arsenic {

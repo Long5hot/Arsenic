@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <variant>
 #include <vector>
+#include <any>
 
 namespace arsenic {
 
@@ -87,6 +88,14 @@ public:
 
   std::string getLexeme() { return lexeme; }
   literal_variant getLiteralValue() { return literal; }
+  std::any getLiteralValueAny() {
+    if (std::holds_alternative<std::string>(getLiteralValue()))
+      return std::get<std::string>(getLiteralValue());
+    else if (std::holds_alternative<double>(getLiteralValue()))
+      return std::get<double>(getLiteralValue());
+    else 
+      return std::monostate();
+  }
   int getLine() { return line; }
   int getFileLocation() { return location; }
 };

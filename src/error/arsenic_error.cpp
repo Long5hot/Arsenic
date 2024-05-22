@@ -1,4 +1,4 @@
-#include <common/arsenic_error>
+#include <Error/arsenic_error>
 #include <Lex/Lex.h>
 
 namespace arsenic {
@@ -11,7 +11,7 @@ void errorReporting::error(Token token, const std::string& message) {
   if (token.getType() == __EOF__) {
     report(token.getLine(), " at end ", message);
   } else
-    report(token.getLine(), "at '" + token.getLexeme() + "'", message);
+    report(token.getLine(), " at '" + token.getLexeme() + "'", message);
 }
 
 void errorReporting::report(int line, std::string where, std::string Message) {

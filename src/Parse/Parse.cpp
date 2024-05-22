@@ -5,7 +5,7 @@
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Parse.h>
-#include <common/arsenic_error>
+#include <Error/arsenic_error>
 #include <cstddef>
 #include <initializer_list>
 #include <memory>
@@ -82,7 +82,8 @@ std::unique_ptr<Expr> Parser::term() {
   while (match({MINUS, PLUS})) {
     Token operator_t = previous();
     std::unique_ptr<Expr> right = factor();
-    expr = std::make_unique<BinaryExpr>(std::move(expr), operator_t, std::move(right));
+    expr = std::make_unique<BinaryExpr>(std::move(expr), operator_t,
+                                        std::move(right));
   }
 
   return expr;
@@ -95,7 +96,8 @@ std::unique_ptr<Expr> Parser::factor() {
   while (match({SLASH, STAR})) {
     Token operator_t = previous();
     std::unique_ptr<Expr> right = unary();
-    expr = std::make_unique<BinaryExpr>(std::move(expr), operator_t, std::move(right));
+    expr = std::make_unique<BinaryExpr>(std::move(expr), operator_t,
+                                        std::move(right));
   }
 
   return expr;
@@ -125,7 +127,7 @@ std::unique_ptr<Expr> Parser::primary() {
     return std::make_unique<LiteralExpr>(nullptr);
 
   if (match({NUMBER, STRING})) {
-    return std::make_unique<LiteralExpr>(previous().getLiteralValue());
+    return std::make_unique<LiteralExpr>(previous().getLiteralValueAny());
   }
   if (match({LEFT_PAREN})) {
     std::unique_ptr<Expr> expr = expression();
@@ -136,14 +138,14 @@ std::unique_ptr<Expr> Parser::primary() {
   throw error(peek(), "Expect expression.");
 }
 
-Token Parser::consume(TokenType type, const std::string& message) {
+Token Parser::consume(TokenType type, const std::string &message) {
 
   if (check(type))
     return advance();
   throw error(peek(), message);
 }
 
-ParserError Parser::error(Token token, const std::string& message) {
+ParserError Parser::error(Token token, const std::string &message) {
   arsenicError.error(token, message);
   return ParserError();
 }

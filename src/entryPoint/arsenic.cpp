@@ -1,5 +1,5 @@
-#include <common/arsenic_error>
-#include <common/arsenic_io>
+#include <Error/arsenic_error>
+#include <Common/arsenic_io>
 #include <iostream>
 #include <stdlib.h>
 

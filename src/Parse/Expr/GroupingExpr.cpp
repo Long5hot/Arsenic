@@ -12,7 +12,7 @@ std::any GroupingExpr::accept(ExprVisitor<std::any>& visitor) {
   return visitor.visit(*this);
 }
 
-const std::unique_ptr<Expr>& GroupingExpr::getExpression() const {
+std::unique_ptr<Expr>& GroupingExpr::getExpression() {
   return expression;
 }
 
