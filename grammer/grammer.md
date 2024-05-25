@@ -1,4 +1,4 @@
-
+```
 program     → statement* EOF ;
 statement   → exprStmt
             | printStmt ;
@@ -14,3 +14,4 @@ unary       → ( "!" | "-" ) unary
               | primary ;
 primary     → NUMBER | STRING | "true" | "false" | "nil"
               | "(" expression ")" ;
+```
