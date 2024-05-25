@@ -21,9 +21,9 @@ public:
 
   Token getOpToken() const;
 
-  std::unique_ptr<Expr>& getLeftExpr() ;
+  std::unique_ptr<Expr> &getLeftExpr();
 
-  std::unique_ptr<Expr>& getRightExpr() ;
+  std::unique_ptr<Expr> &getRightExpr();
 };
 } // namespace arsenic
 

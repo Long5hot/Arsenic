@@ -1,38 +1,47 @@
-#include <Parse/Expr/Expr.h>
-#include <Parse/Expr/GroupingExpr.h>
+#include <Lex/Lex.h>
 #include <Parse/Expr/BinaryExpr.h>
-#include <Parse/Expr/UnaryExpr.h>
-#include <Parse/Expr/LiteralExpr.h>
+#include <Parse/Expr/Expr.h>
 #include <Parse/Expr/ExprVisitor.h>
+#include <Parse/Expr/GroupingExpr.h>
+#include <Parse/Expr/LiteralExpr.h>
+#include <Parse/Expr/UnaryExpr.h>
+#include <Parse/Stmt/ExpressionStmt.h>
+#include <Parse/Stmt/PrintStmt.h>
+#include <Parse/Stmt/StmtVisitor.h>
 #include <any>
 #include <memory>
-#include <Lex/Lex.h>
 
 namespace arsenic {
 
-class Interpreter : public ExprVisitor<std::any> {
+class Interpreter : public ExprVisitor<std::any>, public StmtVisitor<std::any> {
 
 public:
-std::any visit(LiteralExpr & expr);
+  std::any visit(LiteralExpr &expr);
 
-std::any visit(GroupingExpr & expr);
+  std::any visit(GroupingExpr &expr);
 
-std::any visit(UnaryExpr & expr);
+  std::any visit(UnaryExpr &expr);
 
-std::any visit(BinaryExpr & expr);
+  std::any visit(BinaryExpr &expr);
 
-std::any evaluate(std::unique_ptr<Expr>& expr);
+  std::any visit(ExpressionStmt &stmt);
 
-void checkNumberOperand(Token operator_t, const std::any& operand);
+  std::any visit(PrintStmt &stmt);
 
-void checkNumberOperands(Token operator_t, const std::any& left, const std::any& right);
+  std::any evaluate(std::unique_ptr<Expr> &expr);
 
-std::any isTruthy(const std::any& object);
+  void checkNumberOperand(Token operator_t, const std::any &operand);
 
-bool isEqual(const std::any &a, const std::any &b);
+  void checkNumberOperands(Token operator_t, const std::any &left,
+                           const std::any &right);
 
-void interpret(std::unique_ptr<Expr> &expr);
+  std::any isTruthy(const std::any &object);
 
+  bool isEqual(const std::any &a, const std::any &b);
+
+  void interpret(std::vector<std::unique_ptr<Stmt>> &statements);
+
+  void execute(std::unique_ptr<Stmt> &stmt);
 };
 
-}
+} // namespace arsenic

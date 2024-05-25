@@ -12,6 +12,6 @@ std::any UnaryExpr::accept(ExprVisitor<std::any> &visitor) {
 
 Token UnaryExpr::getOpLexeme() const { return operator_t; }
 
-std::unique_ptr<Expr>& UnaryExpr::getExpression() { return expression; }
+std::unique_ptr<Expr> &UnaryExpr::getExpression() { return expression; }
 
 } // namespace arsenic

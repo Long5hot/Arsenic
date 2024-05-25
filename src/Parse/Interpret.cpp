@@ -1,27 +1,32 @@
-#include <cstddef>
-#include <memory>
-#include <any>
-#include <iostream>
-#include <Parse/Interpret.h>
 #include <Error/arsenic_runtime_error>
+#include <Parse/Interpret.h>
+#include <any>
+#include <charconv>
+#include <cstddef>
+#include <iostream>
+#include <memory>
+#include <vector>
 
 namespace arsenic {
-  
-std::any Interpreter::evaluate(std::unique_ptr<Expr> &expr) { return expr->accept(*this); }
 
-void Interpreter::checkNumberOperand(Token operator_t, const std::any& operand ) {
-  if(operand.type() == typeid(double))
+std::any Interpreter::evaluate(std::unique_ptr<Expr> &expr) {
+  return expr->accept(*this);
+}
+
+void Interpreter::checkNumberOperand(Token operator_t,
+                                     const std::any &operand) {
+  if (operand.type() == typeid(double))
     throw new RuntimeError(operator_t, "Operand must be a number.");
 }
 
-void Interpreter::checkNumberOperands(Token operator_t, const std::any& left, const std::any& right) {
-  if(left.type() == typeid(double) && right.type() == typeid(double))
+void Interpreter::checkNumberOperands(Token operator_t, const std::any &left,
+                                      const std::any &right) {
+  if (left.type() == typeid(double) && right.type() == typeid(double))
     return;
   throw new RuntimeError(operator_t, "Operands must be a numbers.");
 }
 
-
-std::any Interpreter::isTruthy(const std::any& object) {
+std::any Interpreter::isTruthy(const std::any &object) {
 
   if (!object.has_value())
     return false;
@@ -48,15 +53,16 @@ bool Interpreter::isEqual(const std::any &a, const std::any &b) {
     return std::any_cast<std::string>(a) == std::any_cast<std::string>(b);
 }
 
-std::string stringify(std::any& object) {
-  if(!object.has_value()) return "nil";
+std::string stringify(std::any &object) {
+  if (!object.has_value())
+    return "nil";
 
-  if(object.type() == typeid(double)) {
+  if (object.type() == typeid(double)) {
     return std::to_string(std::any_cast<double>(object));
   }
 
   if (object.type() == typeid(bool)) {
-    if(std::any_cast<bool>(object))
+    if (std::any_cast<bool>(object))
       return "true";
     return "false";
   }
@@ -105,8 +111,9 @@ std::any Interpreter::visit(BinaryExpr &expr) {
     if ((left.type() == typeid(std::string)) &&
         (right.type() == typeid(std::string)))
       return std::any_cast<double>(left) + std::any_cast<double>(right);
-    
-    throw new RuntimeError(expr.getOpToken(), "Operands must be two numbers or two strings.");
+
+    throw new RuntimeError(expr.getOpToken(),
+                           "Operands must be two numbers or two strings.");
   }
   case TokenType::GREATER:
     checkNumberOperands(expr.getOpToken(), left, right);
@@ -136,13 +143,38 @@ std::any Interpreter::visit(BinaryExpr &expr) {
   }
 }
 
-void Interpreter::interpret(std::unique_ptr<Expr> &expression) {
+std::any Interpreter::visit(ExpressionStmt &stmt) {
+
+  evaluate(stmt.getExpr());
+  return {};
+}
+
+std::any Interpreter::visit(PrintStmt &stmt) {
+
+  std::any value = evaluate(stmt.getExpr());
+  std::cout << stringify(value) << std::endl;
+  return {};
+}
+
+// void Interpreter::interpret(std::unique_ptr<Expr> &expression) {
+//   try {
+//     std::any value = evaluate(expression);
+//     std::cout << stringify(value) << std::endl;
+//   } catch (RuntimeError* error) {
+//     runtimeError(*error);
+//   }
+// }
+
+void Interpreter::interpret(std::vector<std::unique_ptr<Stmt>> &statements) {
   try {
-    std::any value = evaluate(expression);
-    std::cout << stringify(value) << std::endl;
-  } catch (RuntimeError* error) {
+    for (std::unique_ptr<Stmt> &statement : statements) {
+      execute(statement);
+    }
+  } catch (RuntimeError *error) {
     runtimeError(*error);
   }
 }
+
+void Interpreter::execute(std::unique_ptr<Stmt> &stmt) { stmt->accept(*this); }
 
 } // namespace arsenic

@@ -2,10 +2,11 @@
 #define __PARSE_H__
 
 #include <Lex/Lex.h>
+#include <Parse/Expr/Expr.h>
+#include <Parse/Stmt/Stmt.h>
 #include <initializer_list>
 #include <memory>
 #include <vector>
-#include <Parse/Expr/Expr.h>
 
 namespace arsenic {
 
@@ -31,10 +32,13 @@ public:
   std::unique_ptr<Expr> factor();
   std::unique_ptr<Expr> unary();
   std::unique_ptr<Expr> primary();
-  Token consume(TokenType type, const std::string& message);
+  Token consume(TokenType type, const std::string &message);
   void synchronize();
-  std::unique_ptr<Expr> parse();
-  ParserError error(Token token, const std::string& message);
+  std::vector<std::unique_ptr<Stmt>> parse();
+  ParserError error(Token token, const std::string &message);
+  std::unique_ptr<Stmt> statement();
+  std::unique_ptr<Stmt> printStatement();
+  std::unique_ptr<Stmt> expressionStatement();
 };
 
 } // namespace arsenic

@@ -13,8 +13,8 @@ std::any BinaryExpr::accept(ExprVisitor<std::any> &visitor) {
 
 Token BinaryExpr::getOpToken() const { return operator_t; }
 
-std::unique_ptr<Expr>& BinaryExpr::getLeftExpr() { return left; }
+std::unique_ptr<Expr> &BinaryExpr::getLeftExpr() { return left; }
 
-std::unique_ptr<Expr>& BinaryExpr::getRightExpr() { return right; }
+std::unique_ptr<Expr> &BinaryExpr::getRightExpr() { return right; }
 
 } // namespace arsenic

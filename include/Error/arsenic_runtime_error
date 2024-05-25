@@ -9,23 +9,18 @@ class RuntimeError {
 
   Token token_t;
   std::runtime_error error;
+
 public:
+  RuntimeError(Token token, std::string message)
+      : token_t(token), error(message) {}
+  std::string getMessage() { return error.what(); }
 
-  RuntimeError(Token token, std::string message) : token_t(token), error(message) {}
-  std::string getMessage() {
-    return error.what();
-  }
+  int getLine() { return token_t.getLine(); }
 
-  int getLine() {
-    return token_t.getLine();
-  }
-
-  std::string getLexemeString() {
-    return token_t.getLexeme();
-  }
+  std::string getLexemeString() { return token_t.getLexeme(); }
 };
 
-extern void runtimeError(RuntimeError& error);
+extern void runtimeError(RuntimeError &error);
 
-}
+} // namespace arsenic
 #endif // __ARSENIC_RUNTIME_ERROR__

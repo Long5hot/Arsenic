@@ -14,9 +14,9 @@ class GroupingExpr : public Expr {
 public:
   GroupingExpr(std::unique_ptr<Expr> expression);
 
-  std::any accept(ExprVisitor<std::any>& visitor) override;
+  std::any accept(ExprVisitor<std::any> &visitor) override;
 
-  std::unique_ptr<Expr>& getExpression();
+  std::unique_ptr<Expr> &getExpression();
 };
 
 } // namespace arsenic

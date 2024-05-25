@@ -1,3 +1,4 @@
+#include <Error/arsenic_error>
 #include <Lex/Lex.h>
 #include <Parse/Expr/BinaryExpr.h>
 #include <Parse/Expr/Expr.h>
@@ -5,10 +6,14 @@
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Parse.h>
-#include <Error/arsenic_error>
+#include <Parse/Stmt/ExpressionStmt.h>
+#include <Parse/Stmt/PrintStmt.h>
+#include <Parse/Stmt/Stmt.h>
+#include <algorithm>
 #include <cstddef>
 #include <initializer_list>
 #include <memory>
+#include <vector>
 
 namespace arsenic {
 
@@ -175,12 +180,43 @@ void Parser::synchronize() {
   }
 }
 
-std::unique_ptr<Expr> Parser::parse() {
-  try {
-    return expression();
-  } catch (ParserError error) {
-    return nullptr;
+// std::unique_ptr<Expr> Parser::parse() {
+//   try {
+//     return expression();
+//   } catch (ParserError error) {
+//     return nullptr;
+//   }
+// }
+
+std::unique_ptr<Stmt> Parser::statement() {
+
+  if (match({PRINT}))
+    return printStatement();
+
+  return expressionStatement();
+}
+
+std::unique_ptr<Stmt> Parser::printStatement() {
+
+  std::unique_ptr<Expr> value = expression();
+  consume(SEMICOLON, "Expect ';' after value.");
+  return std::make_unique<PrintStmt>(std::move(value));
+}
+
+std::unique_ptr<Stmt> Parser::expressionStatement() {
+
+  std::unique_ptr<Expr> expr = expression();
+  consume(SEMICOLON, "Expect ';' after value.");
+  return std::make_unique<ExpressionStmt>(std::move(expr));
+}
+
+std::vector<std::unique_ptr<Stmt>> Parser::parse() {
+
+  std::vector<std::unique_ptr<Stmt>> statements;
+  while (!isAtEnd()) {
+    statements.push_back(statement());
   }
+  return statements;
 }
 
 } // namespace arsenic

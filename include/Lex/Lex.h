@@ -1,12 +1,12 @@
 #ifndef __LEXH__
 #define __LEXH__
 
+#include <any>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <variant>
 #include <vector>
-#include <any>
 
 namespace arsenic {
 
@@ -93,7 +93,7 @@ public:
       return std::get<std::string>(getLiteralValue());
     else if (std::holds_alternative<double>(getLiteralValue()))
       return std::get<double>(getLiteralValue());
-    else 
+    else
       return std::monostate();
   }
   int getLine() { return line; }

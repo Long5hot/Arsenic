@@ -1,7 +1,9 @@
-#include <Lex/Lex.h>
-#include <cerrno>
-#include <Error/arsenic_error>
 #include <Common/arsenic_io>
+#include <Error/arsenic_error>
+#include <Lex/Lex.h>
+#include <Parse/Interpret.h>
+#include <Parse/Parse.h>
+#include <cerrno>
 #include <fcntl.h>
 #include <iostream>
 #include <memory>
@@ -9,8 +11,7 @@
 #include <sys/types.h>
 #include <system_error>
 #include <unistd.h>
-#include <Parse/Parse.h>
-#include <Parse/Interpret.h>
+#include <vector>
 
 namespace arsenic {
 
@@ -88,11 +89,14 @@ void run(const char *MemoryBuffer) {
 
   std::vector<Token> tokens = scanner.scanTokens();
   std::unique_ptr<Parser> parser = std::make_unique<Parser>(tokens);
-  std::unique_ptr<Expr> expression = parser->parse();
+  //  std::unique_ptr<Expr> expression = parser->parse();
+  //
+  Interpreter *interpreter = new Interpreter();
 
-  Interpreter * interpreter = new Interpreter();
+  std::vector<std::unique_ptr<Stmt>> statements = parser->parse();
 
-  interpreter->interpret(expression);
+  //  interpreter->interpret(expression);
+  interpreter->interpret(statements);
 }
 
 } // namespace arsenic

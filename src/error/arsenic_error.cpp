@@ -3,11 +3,11 @@
 
 namespace arsenic {
 
-void errorReporting::error(int line, const std::string& Message) {
+void errorReporting::error(int line, const std::string &Message) {
   report(line, "", Message);
 }
 
-void errorReporting::error(Token token, const std::string& message) {
+void errorReporting::error(Token token, const std::string &message) {
   if (token.getType() == __EOF__) {
     report(token.getLine(), " at end ", message);
   } else

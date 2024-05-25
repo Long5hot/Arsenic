@@ -1,9 +1,9 @@
-#include <charconv>
-#include <string_view>
-#include <variant>
-#include <iostream>
 #include <Error/arsenic_error>
 #include <Lex/Lex.h>
+#include <charconv>
+#include <iostream>
+#include <string_view>
+#include <variant>
 
 namespace arsenic {
 
@@ -163,7 +163,8 @@ void Scanner::scanToken() {
     else if (isAlpha(c))
       identifier();
     else
-      arsenicError.error(line, "Unexpected character " + std::string().append(1, c));
+      arsenicError.error(line,
+                         "Unexpected character " + std::string().append(1, c));
     break;
   }
 }
