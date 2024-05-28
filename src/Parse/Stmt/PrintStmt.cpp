@@ -9,6 +9,6 @@ std::any PrintStmt::accept(StmtVisitor<std::any> &visitor) {
   return visitor.visit(*this);
 }
 
-std::unique_ptr<Expr> &PrintStmt::getExpr() { return expression; }
+Expr &PrintStmt::getExpr() { return *expression; }
 
 } // namespace arsenic

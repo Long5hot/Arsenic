@@ -12,6 +12,6 @@ std::any GroupingExpr::accept(ExprVisitor<std::any> &visitor) {
   return visitor.visit(*this);
 }
 
-std::unique_ptr<Expr> &GroupingExpr::getExpression() { return expression; }
+Expr &GroupingExpr::getExpression() { return *expression; }
 
 } // namespace arsenic

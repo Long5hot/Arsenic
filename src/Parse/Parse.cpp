@@ -5,9 +5,11 @@
 #include <Parse/Expr/GroupingExpr.h>
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
+#include <Parse/Expr/VarExpr.h>
 #include <Parse/Parse.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/PrintStmt.h>
+#include <Parse/Stmt/VarStmt.h>
 #include <Parse/Stmt/Stmt.h>
 #include <algorithm>
 #include <cstddef>
@@ -134,6 +136,11 @@ std::unique_ptr<Expr> Parser::primary() {
   if (match({NUMBER, STRING})) {
     return std::make_unique<LiteralExpr>(previous().getLiteralValueAny());
   }
+
+  if(match({IDENTIFIER})) {
+    return std::make_unique<VarExpr>(previous());
+  }
+
   if (match({LEFT_PAREN})) {
     std::unique_ptr<Expr> expr = expression();
     consume(RIGHT_PAREN, "Expect ')' after expression.");
@@ -210,11 +217,38 @@ std::unique_ptr<Stmt> Parser::expressionStatement() {
   return std::make_unique<ExpressionStmt>(std::move(expr));
 }
 
+std::unique_ptr<Stmt> Parser::declaration() {
+
+  try {
+    if(match({VAR}))
+      return varDeclaration();
+    
+    return statement();
+  } catch(ParserError error) {
+      synchronize();
+      return nullptr;
+  }
+}
+
+std::unique_ptr<Stmt> Parser::varDeclaration() {
+  Token name = consume(IDENTIFIER, "Expect variable name.");
+
+  std::unique_ptr<Expr> initializer = nullptr;
+
+  if(match({EQUAL})) {
+    initializer = expression();
+  }
+
+  consume(SEMICOLON, "Expect ';' after variable declaration.");
+  return std::make_unique<VarStmt>(name, std::move(initializer));
+}
+
 std::vector<std::unique_ptr<Stmt>> Parser::parse() {
 
   std::vector<std::unique_ptr<Stmt>> statements;
   while (!isAtEnd()) {
-    statements.push_back(statement());
+//    statements.push_back(statement());
+    statements.push_back(declaration());
   }
   return statements;
 }

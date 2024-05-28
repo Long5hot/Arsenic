@@ -9,6 +9,6 @@ std::any ExpressionStmt::accept(StmtVisitor<std::any> &visitor) {
   return visitor.visit(*this);
 }
 
-std::unique_ptr<Expr> &ExpressionStmt::getExpr() { return expression; }
+Expr &ExpressionStmt::getExpr() { return *expression; }
 
 } // namespace arsenic

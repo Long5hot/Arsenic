@@ -20,7 +20,7 @@ public:
 
   Token getOpLexeme() const;
 
-  std::unique_ptr<Expr> &getExpression();
+  Expr &getExpression();
 };
 
 } // namespace arsenic

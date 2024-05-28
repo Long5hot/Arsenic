@@ -1,3 +1,4 @@
+#include <Environment.h>
 #include <Lex/Lex.h>
 #include <Parse/Expr/BinaryExpr.h>
 #include <Parse/Expr/Expr.h>
@@ -5,15 +6,19 @@
 #include <Parse/Expr/GroupingExpr.h>
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
+#include <Parse/Expr/VarExpr.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/PrintStmt.h>
 #include <Parse/Stmt/StmtVisitor.h>
+#include <Parse/Stmt/VarStmt.h>
 #include <any>
 #include <memory>
 
 namespace arsenic {
 
 class Interpreter : public ExprVisitor<std::any>, public StmtVisitor<std::any> {
+
+  Environment environment;
 
 public:
   std::any visit(LiteralExpr &expr);
@@ -28,7 +33,11 @@ public:
 
   std::any visit(PrintStmt &stmt);
 
-  std::any evaluate(std::unique_ptr<Expr> &expr);
+  std::any visit(VarStmt &stmt);
+
+  std::any visit(VarExpr &stmt);
+
+  std::any evaluate(Expr &expr);
 
   void checkNumberOperand(Token operator_t, const std::any &operand);
 

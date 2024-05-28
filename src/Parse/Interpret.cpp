@@ -9,8 +9,8 @@
 
 namespace arsenic {
 
-std::any Interpreter::evaluate(std::unique_ptr<Expr> &expr) {
-  return expr->accept(*this);
+std::any Interpreter::evaluate(Expr &expr) {
+  return expr.accept(*this);
 }
 
 void Interpreter::checkNumberOperand(Token operator_t,
@@ -80,6 +80,20 @@ std::any Interpreter::visit(LiteralExpr &expr) {
 
 std::any Interpreter::visit(GroupingExpr &expr) {
   return evaluate(expr.getExpression());
+}
+
+std::any Interpreter::visit(VarExpr &expr) {
+  return environment.get(expr.getToken());
+}
+
+std::any Interpreter::visit(VarStmt &stmt) {
+
+  std::any objectValue = {};
+  if(stmt.hasInitializer())
+    objectValue = evaluate(stmt.getInitializer());
+
+  environment.define(stmt.getToken().getLexeme(), objectValue);
+  return {};
 }
 
 std::any Interpreter::visit(UnaryExpr &expr) {

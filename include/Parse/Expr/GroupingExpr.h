@@ -16,7 +16,7 @@ public:
 
   std::any accept(ExprVisitor<std::any> &visitor) override;
 
-  std::unique_ptr<Expr> &getExpression();
+  Expr &getExpression();
 };
 
 } // namespace arsenic

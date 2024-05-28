@@ -5,6 +5,7 @@ namespace arsenic {
 
 class ExpressionStmt;
 class PrintStmt;
+class VarStmt;
 
 template <typename R> class StmtVisitor {
 
@@ -13,6 +14,7 @@ public:
 
   virtual std::any visit(ExpressionStmt &) = 0;
   virtual std::any visit(PrintStmt &) = 0;
+  virtual std::any visit(VarStmt &) = 0;
 };
 
 } // namespace arsenic
