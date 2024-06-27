@@ -1,5 +1,6 @@
 #include <Error/arsenic_error>
 #include <Lex/Lex.h>
+#include <Parse/Expr/AssignExpr.h>
 #include <Parse/Expr/BinaryExpr.h>
 #include <Parse/Expr/Expr.h>
 #include <Parse/Expr/GroupingExpr.h>
@@ -9,8 +10,8 @@
 #include <Parse/Parse.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/PrintStmt.h>
-#include <Parse/Stmt/VarStmt.h>
 #include <Parse/Stmt/Stmt.h>
+#include <Parse/Stmt/VarStmt.h>
 #include <algorithm>
 #include <cstddef>
 #include <initializer_list>
@@ -21,22 +22,6 @@ namespace arsenic {
 
 Parser::Parser(std::vector<Token> &tokens) : tokens(tokens) {}
 // expression → equality ;
-std::unique_ptr<Expr> Parser::expression() { return equality(); }
-
-// equality → comparison ( ( "!=" | "==" ) comparison )* ;
-std::unique_ptr<Expr> Parser::equality() {
-
-  std::unique_ptr<Expr> expr = comparision();
-
-  while (match({BANG_EQUAL, EQUAL_EQUAL})) {
-    Token operator_t = previous();
-    std::unique_ptr<Expr> right = comparision();
-    expr = std::make_unique<BinaryExpr>(std::move(expr), operator_t,
-                                        std::move(right));
-  }
-
-  return expr;
-}
 
 bool Parser::match(std::initializer_list<TokenType> types) {
 
@@ -67,6 +52,42 @@ bool Parser::isAtEnd() { return peek().getType() == __EOF__; }
 Token Parser::peek() { return tokens.at(current); }
 
 Token Parser::previous() { return tokens.at(current - 1); }
+
+std::unique_ptr<Expr> Parser::expression() { return assignment(); }
+
+std::unique_ptr<Expr> Parser::assignment() {
+
+  std::unique_ptr<Expr> expr = equality();
+
+  if (match({EQUAL})) {
+    Token equals = previous();
+    std::unique_ptr<Expr> value = assignment();
+
+    if (VarExpr *var_expr = dynamic_cast<VarExpr *>(expr.get())) {
+      return std::make_unique<AssignExpr>(var_expr->getToken(),
+                                          std::move(value));
+    }
+
+    error(equals, "Invalid assignment target.");
+  }
+
+  return expr;
+}
+
+// equality → comparison ( ( "!=" | "==" ) comparison )* ;
+std::unique_ptr<Expr> Parser::equality() {
+
+  std::unique_ptr<Expr> expr = comparision();
+
+  while (match({BANG_EQUAL, EQUAL_EQUAL})) {
+    Token operator_t = previous();
+    std::unique_ptr<Expr> right = comparision();
+    expr = std::make_unique<BinaryExpr>(std::move(expr), operator_t,
+                                        std::move(right));
+  }
+
+  return expr;
+}
 
 // comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 std::unique_ptr<Expr> Parser::comparision() {
@@ -137,7 +158,7 @@ std::unique_ptr<Expr> Parser::primary() {
     return std::make_unique<LiteralExpr>(previous().getLiteralValueAny());
   }
 
-  if(match({IDENTIFIER})) {
+  if (match({IDENTIFIER})) {
     return std::make_unique<VarExpr>(previous());
   }
 
@@ -220,13 +241,13 @@ std::unique_ptr<Stmt> Parser::expressionStatement() {
 std::unique_ptr<Stmt> Parser::declaration() {
 
   try {
-    if(match({VAR}))
+    if (match({VAR}))
       return varDeclaration();
-    
+
     return statement();
-  } catch(ParserError error) {
-      synchronize();
-      return nullptr;
+  } catch (ParserError error) {
+    synchronize();
+    return nullptr;
   }
 }
 
@@ -235,7 +256,7 @@ std::unique_ptr<Stmt> Parser::varDeclaration() {
 
   std::unique_ptr<Expr> initializer = nullptr;
 
-  if(match({EQUAL})) {
+  if (match({EQUAL})) {
     initializer = expression();
   }
 
@@ -247,7 +268,7 @@ std::vector<std::unique_ptr<Stmt>> Parser::parse() {
 
   std::vector<std::unique_ptr<Stmt>> statements;
   while (!isAtEnd()) {
-//    statements.push_back(statement());
+    //    statements.push_back(statement());
     statements.push_back(declaration());
   }
   return statements;

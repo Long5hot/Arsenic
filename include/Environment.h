@@ -17,7 +17,7 @@ public:
 
   void define(std::string name, std::any value);
   std::any get(Token name);
-  
+  void assign(Token name, std::any value);
 };
 
 }

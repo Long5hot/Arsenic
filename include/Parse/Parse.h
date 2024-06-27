@@ -32,6 +32,7 @@ public:
   std::unique_ptr<Expr> factor();
   std::unique_ptr<Expr> unary();
   std::unique_ptr<Expr> primary();
+  std::unique_ptr<Expr> assignment();
   Token consume(TokenType type, const std::string &message);
   void synchronize();
   std::vector<std::unique_ptr<Stmt>> parse();
