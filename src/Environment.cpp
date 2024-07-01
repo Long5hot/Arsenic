@@ -3,15 +3,23 @@
 
 namespace arsenic {
 
+Environment::Environment() : enclosing(nullptr) {}
+
+Environment::Environment(Environment *enclosing) : enclosing(enclosing) {}
+
 void Environment::define(std::string name, std::any value) {
   values.insert({name, value});
 }
 
 std::any Environment::get(Token name) {
-  if(auto search = values.find(name.getLexeme()); search != values.end())
+  if (auto search = values.find(name.getLexeme()); search != values.end())
     return search->second;
 
-  throw new RuntimeError(name, "Undefined variable '" + name.getLexeme() + "'.");
+  if (enclosing != nullptr)
+    return enclosing->get(name);
+
+  throw new RuntimeError(name,
+                         "Undefined variable '" + name.getLexeme() + "'.");
 }
 
 void Environment::assign(Token name, std::any value) {
@@ -20,7 +28,13 @@ void Environment::assign(Token name, std::any value) {
     return;
   }
 
-  throw new RuntimeError(name, "Undefined variable '" + name.getLexeme() + "'.");
+  if (enclosing != nullptr) {
+    enclosing->assign(name, value);
+    return;
+  }
+
+  throw new RuntimeError(name,
+                         "Undefined variable '" + name.getLexeme() + "'.");
 }
 
-}
+} // namespace arsenic

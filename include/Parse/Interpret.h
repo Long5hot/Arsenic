@@ -1,5 +1,6 @@
 #include <Environment.h>
 #include <Lex/Lex.h>
+#include <Parse/Expr/AssignExpr.h>
 #include <Parse/Expr/BinaryExpr.h>
 #include <Parse/Expr/Expr.h>
 #include <Parse/Expr/ExprVisitor.h>
@@ -7,7 +8,7 @@
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
-#include <Parse/Expr/AssignExpr.h>
+#include <Parse/Stmt/BlockStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/PrintStmt.h>
 #include <Parse/Stmt/StmtVisitor.h>
@@ -19,7 +20,7 @@ namespace arsenic {
 
 class Interpreter : public ExprVisitor<std::any>, public StmtVisitor<std::any> {
 
-  Environment environment;
+  Environment *environment;
 
 public:
   std::any visit(LiteralExpr &expr);
@@ -35,6 +36,8 @@ public:
   std::any visit(PrintStmt &stmt);
 
   std::any visit(VarStmt &stmt);
+
+  std::any visit(BlockStmt &stmt);
 
   std::any visit(VarExpr &stmt);
 
@@ -54,6 +57,13 @@ public:
   void interpret(std::vector<std::unique_ptr<Stmt>> &statements);
 
   void execute(std::unique_ptr<Stmt> &stmt);
+
+  void executeBlock(std::vector<std::unique_ptr<Stmt>> &statements,
+                    Environment *env);
+
+  Interpreter();
+
+  ~Interpreter();
 };
 
 } // namespace arsenic

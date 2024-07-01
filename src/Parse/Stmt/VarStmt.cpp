@@ -13,6 +13,6 @@ Expr &VarStmt::getInitializer() { return *initializerExpr; }
 
 Token VarStmt::getToken() { return name; }
 
-bool VarStmt::hasInitializer() {return initializerExpr != nullptr; }
+bool VarStmt::hasInitializer() { return initializerExpr != nullptr; }
 
 } // namespace arsenic

@@ -8,6 +8,7 @@
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
 #include <Parse/Parse.h>
+#include <Parse/Stmt/BlockStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/PrintStmt.h>
 #include <Parse/Stmt/Stmt.h>
@@ -221,7 +222,22 @@ std::unique_ptr<Stmt> Parser::statement() {
   if (match({PRINT}))
     return printStatement();
 
+  if (match({LEFT_BRACE}))
+    return std::make_unique<BlockStmt>(block());
+
   return expressionStatement();
+}
+
+std::vector<std::unique_ptr<Stmt>> Parser::block() {
+
+  std::vector<std::unique_ptr<Stmt>> statements;
+
+  while (!check(RIGHT_BRACE) && !isAtEnd()) {
+    statements.push_back(declaration());
+  }
+
+  consume(RIGHT_BRACE, "Expect '}' after block.");
+  return statements;
 }
 
 std::unique_ptr<Stmt> Parser::printStatement() {

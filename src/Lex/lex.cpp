@@ -180,7 +180,7 @@ std::vector<Token> Scanner::scanTokens() {
 
   tokens.push_back(Token(__EOF__, "", "End of File", line, start));
 
-  dump();
+  //  dump();
 
   return tokens;
 }

@@ -42,6 +42,7 @@ public:
   std::unique_ptr<Stmt> expressionStatement();
   std::unique_ptr<Stmt> declaration();
   std::unique_ptr<Stmt> varDeclaration();
+  std::vector<std::unique_ptr<Stmt>> block();
 };
 
 } // namespace arsenic

@@ -81,7 +81,7 @@ std::any Interpreter::visit(GroupingExpr &expr) {
 }
 
 std::any Interpreter::visit(VarExpr &expr) {
-  return environment.get(expr.getToken());
+  return environment->get(expr.getToken());
 }
 
 std::any Interpreter::visit(VarStmt &stmt) {
@@ -90,13 +90,13 @@ std::any Interpreter::visit(VarStmt &stmt) {
   if (stmt.hasInitializer())
     objectValue = evaluate(stmt.getInitializer());
 
-  environment.define(stmt.getToken().getLexeme(), objectValue);
+  environment->define(stmt.getToken().getLexeme(), objectValue);
   return {};
 }
 
 std::any Interpreter::visit(AssignExpr &expr) {
   std::any value = evaluate(expr.getValue());
-  environment.assign(expr.getToken(), value);
+  environment->assign(expr.getToken(), value);
   return value;
 }
 
@@ -174,6 +174,27 @@ std::any Interpreter::visit(PrintStmt &stmt) {
   return {};
 }
 
+std::any Interpreter::visit(BlockStmt &stmt) {
+
+  executeBlock(stmt.getStatements(), new Environment(environment));
+  return {};
+}
+
+void Interpreter::executeBlock(std::vector<std::unique_ptr<Stmt>> &statements,
+                               Environment *env) {
+
+  Environment *prevEnvironment = this->environment;
+
+  //  try {
+  this->environment = env;
+
+  for (auto &statement : statements)
+    execute(statement);
+  //  }
+  this->environment = prevEnvironment;
+  delete env;
+}
+
 // void Interpreter::interpret(std::unique_ptr<Expr> &expression) {
 //   try {
 //     std::any value = evaluate(expression);
@@ -194,5 +215,9 @@ void Interpreter::interpret(std::vector<std::unique_ptr<Stmt>> &statements) {
 }
 
 void Interpreter::execute(std::unique_ptr<Stmt> &stmt) { stmt->accept(*this); }
+
+Interpreter::Interpreter() : environment(new Environment()) {}
+
+Interpreter::~Interpreter() { delete environment; }
 
 } // namespace arsenic
