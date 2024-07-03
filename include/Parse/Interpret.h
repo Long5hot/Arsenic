@@ -15,6 +15,7 @@
 #include <Parse/Stmt/PrintStmt.h>
 #include <Parse/Stmt/StmtVisitor.h>
 #include <Parse/Stmt/VarStmt.h>
+#include <Parse/Stmt/WhileStmt.h>
 #include <any>
 #include <memory>
 
@@ -42,6 +43,8 @@ public:
   std::any visit(BlockStmt &stmt);
 
   std::any visit(IfStmt &stmt);
+
+  std::any visit(WhileStmt &stmt);
 
   std::any visit(VarExpr &stmt);
 

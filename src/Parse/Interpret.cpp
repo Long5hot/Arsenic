@@ -107,6 +107,15 @@ std::any Interpreter::visit(VarStmt &stmt) {
   return {};
 }
 
+std::any Interpreter::visit(WhileStmt &stmt) {
+
+  while(std::any_cast<bool>(isTruthy(evaluate(stmt.getCondition())))) {
+    execute(stmt.getWhileBody());
+  }
+
+  return {};
+}
+
 std::any Interpreter::visit(AssignExpr &expr) {
   std::any value = evaluate(expr.getValue());
   environment->assign(expr.getToken(), value);

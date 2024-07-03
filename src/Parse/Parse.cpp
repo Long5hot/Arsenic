@@ -15,6 +15,7 @@
 #include <Parse/Stmt/PrintStmt.h>
 #include <Parse/Stmt/Stmt.h>
 #include <Parse/Stmt/VarStmt.h>
+#include <Parse/Stmt/WhileStmt.h>
 #include <algorithm>
 #include <cstddef>
 #include <initializer_list>
@@ -262,6 +263,9 @@ std::unique_ptr<Stmt> Parser::statement() {
   if (match({PRINT}))
     return printStatement();
 
+  if (match({WHILE}))
+    return whileStatement();
+
   if (match({LEFT_BRACE}))
     return std::make_unique<BlockStmt>(block());
 
@@ -292,6 +296,16 @@ std::unique_ptr<Stmt> Parser::expressionStatement() {
   std::unique_ptr<Expr> expr = expression();
   consume(SEMICOLON, "Expect ';' after value.");
   return std::make_unique<ExpressionStmt>(std::move(expr));
+}
+
+std::unique_ptr<Stmt> Parser::whileStatement() {
+
+  consume(LEFT_PAREN, "Expect '(' after 'while'.");
+  std::unique_ptr<Expr> condition = expression();
+  consume(RIGHT_PAREN, "Expect ')' after condition.");
+  std::unique_ptr<Stmt> body = statement();
+
+  return std::make_unique<WhileStmt>(std::move(condition), std::move(body));
 }
 
 std::unique_ptr<Stmt> Parser::declaration() {

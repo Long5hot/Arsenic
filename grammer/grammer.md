@@ -8,6 +8,7 @@ declaration → varDecl
 statement   → exprStmt
               | ifStmt
               | printStmt
+              | whileStmt
               | block ;
 
 block       → "{" declaration* "}" ;
@@ -17,6 +18,8 @@ varDecl     → "var" IDENTIFIER ( "=" expression )? ";" ;
 exprStmt    → expression ";" ;
 
 printStmt   → "print" expression ";" ;
+
+whileStmt → "while" "(" expression ")" statement ;
 
 ifStmt      → "if" "(" expression ")" statement
             ( "else" statement )? ;

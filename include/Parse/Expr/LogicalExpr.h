@@ -28,4 +28,4 @@ public:
 
 } // namespace arsenic
 
-#endif
+#endif // !__LOGICALEXPR__
