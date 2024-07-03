@@ -33,6 +33,8 @@ public:
   std::unique_ptr<Expr> unary();
   std::unique_ptr<Expr> primary();
   std::unique_ptr<Expr> assignment();
+  std::unique_ptr<Expr> logical_and();
+  std::unique_ptr<Expr> logical_or();
   Token consume(TokenType type, const std::string &message);
   void synchronize();
   std::vector<std::unique_ptr<Stmt>> parse();

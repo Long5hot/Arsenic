@@ -5,6 +5,7 @@
 #include <Parse/Expr/Expr.h>
 #include <Parse/Expr/GroupingExpr.h>
 #include <Parse/Expr/LiteralExpr.h>
+#include <Parse/Expr/LogicalExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
 #include <Parse/Parse.h>
@@ -59,7 +60,7 @@ std::unique_ptr<Expr> Parser::expression() { return assignment(); }
 
 std::unique_ptr<Expr> Parser::assignment() {
 
-  std::unique_ptr<Expr> expr = equality();
+  std::unique_ptr<Expr> expr = logical_or();
 
   if (match({EQUAL})) {
     Token equals = previous();
@@ -71,6 +72,34 @@ std::unique_ptr<Expr> Parser::assignment() {
     }
 
     error(equals, "Invalid assignment target.");
+  }
+
+  return expr;
+}
+
+std::unique_ptr<Expr> Parser::logical_or() {
+
+  std::unique_ptr<Expr> expr = logical_and();
+
+  while (match({OR})) {
+    Token operator_t = previous();
+    std::unique_ptr<Expr> right = logical_and();
+    expr = std::make_unique<LogicalExpr>(std::move(expr), operator_t,
+                                         std::move(right));
+  }
+
+  return expr;
+}
+
+std::unique_ptr<Expr> Parser::logical_and() {
+
+  std::unique_ptr<Expr> expr = equality();
+
+  while (match({AND})) {
+    Token operator_t = previous();
+    std::unique_ptr<Expr> right = equality();
+    expr = std::make_unique<LogicalExpr>(std::move(expr), operator_t,
+                                         std::move(right));
   }
 
   return expr;
@@ -154,7 +183,7 @@ std::unique_ptr<Expr> Parser::primary() {
   if (match({TRUE}))
     return std::make_unique<LiteralExpr>(true);
   if (match({NIL}))
-    return std::make_unique<LiteralExpr>(nullptr);
+    return std::make_unique<LiteralExpr>();
 
   if (match({NUMBER, STRING})) {
     return std::make_unique<LiteralExpr>(previous().getLiteralValueAny());

@@ -13,6 +13,8 @@ class LiteralExpr : public Expr {
   std::any literal_value;
 
 public:
+  LiteralExpr();
+
   LiteralExpr(std::any value_t);
 
   std::any accept(ExprVisitor<std::any> &visitor) override;

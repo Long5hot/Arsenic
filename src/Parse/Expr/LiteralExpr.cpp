@@ -2,6 +2,8 @@
 
 namespace arsenic {
 
+LiteralExpr::LiteralExpr() {}
+
 LiteralExpr::LiteralExpr(std::any value_t) : literal_value(value_t) {}
 
 std::any LiteralExpr::accept(ExprVisitor<std::any> &visitor) {

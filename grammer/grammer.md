@@ -22,12 +22,22 @@ ifStmt      → "if" "(" expression ")" statement
             ( "else" statement )? ;
 
 expression  → assignment;
+
 assignment  → IDENTIFIER "=" assignment
-              | equality;
+              | logic_or;
+
+logic_or    → logic_and ( "or" logic_and )* ;
+
+logic_and   → equality ( "and" equality )* ;
+
 equality    → comparison ( ( "!=" | "==" ) comparison )* ;
+
 comparison  → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+
 term        → factor ( ( "-" | "+" ) factor )* ;
+
 factor      → unary ( ( "/" | "*" ) unary )* ;
+
 unary       → ( "!" | "-" ) unary
               | primary ;
 primary     → "true" | "false" | "nil"

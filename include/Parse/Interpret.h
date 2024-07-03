@@ -8,6 +8,7 @@
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
+#include <Parse/Expr/LogicalExpr.h>
 #include <Parse/Stmt/BlockStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/IfStmt.h>
@@ -45,6 +46,8 @@ public:
   std::any visit(VarExpr &stmt);
 
   std::any visit(AssignExpr &expr);
+
+  std::any visit(LogicalExpr &expr);
 
   std::any evaluate(Expr &expr);
 
