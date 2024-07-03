@@ -39,6 +39,7 @@ public:
   ParserError error(Token token, const std::string &message);
   std::unique_ptr<Stmt> statement();
   std::unique_ptr<Stmt> printStatement();
+  std::unique_ptr<Stmt> ifStatement();
   std::unique_ptr<Stmt> expressionStatement();
   std::unique_ptr<Stmt> declaration();
   std::unique_ptr<Stmt> varDeclaration();

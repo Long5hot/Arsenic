@@ -10,6 +10,7 @@
 #include <Parse/Expr/VarExpr.h>
 #include <Parse/Stmt/BlockStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
+#include <Parse/Stmt/IfStmt.h>
 #include <Parse/Stmt/PrintStmt.h>
 #include <Parse/Stmt/StmtVisitor.h>
 #include <Parse/Stmt/VarStmt.h>
@@ -39,6 +40,8 @@ public:
 
   std::any visit(BlockStmt &stmt);
 
+  std::any visit(IfStmt &stmt);
+
   std::any visit(VarExpr &stmt);
 
   std::any visit(AssignExpr &expr);
@@ -56,7 +59,7 @@ public:
 
   void interpret(std::vector<std::unique_ptr<Stmt>> &statements);
 
-  void execute(std::unique_ptr<Stmt> &stmt);
+  void execute(Stmt &stmt);
 
   void executeBlock(std::vector<std::unique_ptr<Stmt>> &statements,
                     Environment *env);

@@ -10,6 +10,7 @@
 #include <Parse/Parse.h>
 #include <Parse/Stmt/BlockStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
+#include <Parse/Stmt/IfStmt.h>
 #include <Parse/Stmt/PrintStmt.h>
 #include <Parse/Stmt/Stmt.h>
 #include <Parse/Stmt/VarStmt.h>
@@ -209,15 +210,25 @@ void Parser::synchronize() {
   }
 }
 
-// std::unique_ptr<Expr> Parser::parse() {
-//   try {
-//     return expression();
-//   } catch (ParserError error) {
-//     return nullptr;
-//   }
-// }
+std::unique_ptr<Stmt> Parser::ifStatement() {
+
+  consume(LEFT_PAREN, "Expect '(' after 'if'.");
+  std::unique_ptr<Expr> condition = expression();
+  consume(RIGHT_PAREN, "Expect ')' after if condition.");
+
+  std::unique_ptr<Stmt> thenBranch = statement();
+  std::unique_ptr<Stmt> elseBranch = nullptr;
+  if (match({ELSE})) {
+    elseBranch = statement();
+  }
+  return std::make_unique<IfStmt>(std::move(condition), std::move(thenBranch),
+                                  std::move(elseBranch));
+}
 
 std::unique_ptr<Stmt> Parser::statement() {
+
+  if (match({IF}))
+    return ifStatement();
 
   if (match({PRINT}))
     return printStatement();

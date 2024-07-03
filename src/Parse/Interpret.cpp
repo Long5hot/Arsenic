@@ -189,10 +189,20 @@ void Interpreter::executeBlock(std::vector<std::unique_ptr<Stmt>> &statements,
   this->environment = env;
 
   for (auto &statement : statements)
-    execute(statement);
+    execute(*statement);
   //  }
   this->environment = prevEnvironment;
   delete env;
+}
+
+std::any Interpreter::visit(IfStmt &stmt) {
+
+  if (std::any_cast<bool>(isTruthy(evaluate(stmt.getCondition()))))
+    execute(stmt.getThenBranch());
+  else if (stmt.hasElseBranch())
+    execute(stmt.getElseBranch());
+
+  return {};
 }
 
 // void Interpreter::interpret(std::unique_ptr<Expr> &expression) {
@@ -207,14 +217,14 @@ void Interpreter::executeBlock(std::vector<std::unique_ptr<Stmt>> &statements,
 void Interpreter::interpret(std::vector<std::unique_ptr<Stmt>> &statements) {
   try {
     for (std::unique_ptr<Stmt> &statement : statements) {
-      execute(statement);
+      execute(*statement);
     }
   } catch (RuntimeError *error) {
     runtimeError(*error);
   }
 }
 
-void Interpreter::execute(std::unique_ptr<Stmt> &stmt) { stmt->accept(*this); }
+void Interpreter::execute(Stmt &stmt) { stmt.accept(*this); }
 
 Interpreter::Interpreter() : environment(new Environment()) {}
 
