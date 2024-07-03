@@ -19,7 +19,10 @@ exprStmt    → expression ";" ;
 
 printStmt   → "print" expression ";" ;
 
-whileStmt → "while" "(" expression ")" statement ;
+whileStmt   → "while" "(" expression ")" statement ;
+
+forStmt     → "for" "(" ( varDecl | exprStmt | ";" )
+               expression? ";"expression? ")" statement ;
 
 ifStmt      → "if" "(" expression ")" statement
             ( "else" statement )? ;

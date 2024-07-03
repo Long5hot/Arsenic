@@ -257,6 +257,9 @@ std::unique_ptr<Stmt> Parser::ifStatement() {
 
 std::unique_ptr<Stmt> Parser::statement() {
 
+  if (match({FOR}))
+    return forStatement();
+
   if (match({IF}))
     return ifStatement();
 
@@ -270,6 +273,64 @@ std::unique_ptr<Stmt> Parser::statement() {
     return std::make_unique<BlockStmt>(block());
 
   return expressionStatement();
+}
+
+std::unique_ptr<Stmt> Parser::forStatement() {
+
+  consume(LEFT_PAREN, "Expect '(' after 'for'.");
+
+  std::unique_ptr<Stmt> initializer;
+
+  // Check for initializer
+  if (match({SEMICOLON}))
+    initializer = nullptr;
+  else if (match({VAR}))
+    initializer = varDeclaration();
+  else
+    initializer = expressionStatement();
+
+  std::unique_ptr<Expr> condition = nullptr;
+
+  if (!check(SEMICOLON)) {
+    condition = expression();
+  }
+
+  consume(SEMICOLON, "Expect ';' after loop condition.");
+
+  std::unique_ptr<Expr> increment = nullptr;
+
+  if (!check(RIGHT_PAREN)) {
+    increment = expression();
+  }
+
+  consume(RIGHT_PAREN, "Expect ')' after for clauses.");
+
+  std::unique_ptr<Stmt> forBody = statement();
+
+  if (increment != nullptr) {
+    std::vector<std::unique_ptr<Stmt>>
+        forExprAndBody; // = {std::move(forBody),
+                        // std::make_unique<ExpressionStmt>(std::move(increment))};
+    forExprAndBody.push_back(std::move(forBody));
+    forExprAndBody.push_back(
+        std::make_unique<ExpressionStmt>(std::move(increment)));
+    forBody = std::make_unique<BlockStmt>(std::move(forExprAndBody));
+  }
+
+  if (condition == nullptr)
+    condition = std::make_unique<LiteralExpr>(true);
+
+  forBody =
+      std::make_unique<WhileStmt>(std::move(condition), std::move(forBody));
+
+  if (initializer != nullptr) {
+    std::vector<std::unique_ptr<Stmt>> forExprAndBody;
+    forExprAndBody.push_back(std::move(initializer));
+    forExprAndBody.push_back(std::move(forBody));
+    // = {std::move(initializer), std::move(forBody)};
+    forBody = std::make_unique<BlockStmt>(std::move(forExprAndBody));
+  }
+  return forBody;
 }
 
 std::vector<std::unique_ptr<Stmt>> Parser::block() {
