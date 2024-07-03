@@ -3,7 +3,7 @@
 namespace arsenic {
 
 LogicalExpr::LogicalExpr(std::unique_ptr<Expr> left, Token op,
-                       std::unique_ptr<Expr> right)
+                         std::unique_ptr<Expr> right)
     : left(std::move(left)), operator_t(op), right(std::move(right)) {}
 
 std::any LogicalExpr::accept(ExprVisitor<std::any> &visitor) {

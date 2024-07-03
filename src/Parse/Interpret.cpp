@@ -84,16 +84,16 @@ std::any Interpreter::visit(VarExpr &expr) {
   return environment->get(expr.getToken());
 }
 
-std::any Interpreter::visit(LogicalExpr &expr){
+std::any Interpreter::visit(LogicalExpr &expr) {
   std::any left = evaluate(expr.getLeftExpr());
 
   if (expr.getOpToken().getType() == TokenType::OR) {
     if (std::any_cast<bool>(isTruthy(left)))
       return left;
   } else {
-     if (!std::any_cast<bool>(isTruthy(left)))
+    if (!std::any_cast<bool>(isTruthy(left)))
       return left;
-    }
+  }
   return evaluate(expr.getRightExpr());
 }
 
@@ -109,7 +109,7 @@ std::any Interpreter::visit(VarStmt &stmt) {
 
 std::any Interpreter::visit(WhileStmt &stmt) {
 
-  while(std::any_cast<bool>(isTruthy(evaluate(stmt.getCondition())))) {
+  while (std::any_cast<bool>(isTruthy(evaluate(stmt.getCondition())))) {
     execute(stmt.getWhileBody());
   }
 
