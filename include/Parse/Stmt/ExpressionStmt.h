@@ -9,10 +9,10 @@
 namespace arsenic {
 
 class ExpressionStmt : public Stmt {
-  std::unique_ptr<Expr> expression;
+  std::shared_ptr<Expr> expression;
 
 public:
-  ExpressionStmt(std::unique_ptr<Expr> expr);
+  ExpressionStmt(std::shared_ptr<Expr> expr);
 
   std::any accept(StmtVisitor<std::any> &visitor) override;
 

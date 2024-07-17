@@ -2,8 +2,8 @@
 
 namespace arsenic {
 
-IfStmt::IfStmt(std::unique_ptr<Expr> expr, std::unique_ptr<Stmt> thenBranch,
-               std::unique_ptr<Stmt> elseBranch)
+IfStmt::IfStmt(std::shared_ptr<Expr> expr, std::shared_ptr<Stmt> thenBranch,
+               std::shared_ptr<Stmt> elseBranch)
     : condition(std::move(expr)), thenBranch(std::move(thenBranch)),
       elseBranch(std::move(elseBranch)) {}
 

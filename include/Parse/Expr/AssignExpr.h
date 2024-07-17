@@ -12,10 +12,10 @@ namespace arsenic {
 class AssignExpr : public Expr {
 
   Token name;
-  std::unique_ptr<Expr> value;
+  std::shared_ptr<Expr> value;
 
 public:
-  AssignExpr(Token name, std::unique_ptr<Expr> value);
+  AssignExpr(Token name, std::shared_ptr<Expr> value);
   std::any accept(ExprVisitor<std::any> &visitor);
   Token getToken() const;
   Expr &getValue() const;

@@ -9,10 +9,10 @@ namespace arsenic {
 
 class GroupingExpr : public Expr {
 
-  std::unique_ptr<Expr> expression;
+  std::shared_ptr<Expr> expression;
 
 public:
-  GroupingExpr(std::unique_ptr<Expr> expression);
+  GroupingExpr(std::shared_ptr<Expr> expression);
 
   std::any accept(ExprVisitor<std::any> &visitor) override;
 

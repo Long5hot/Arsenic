@@ -3,7 +3,7 @@
 
 namespace arsenic {
 
-UnaryExpr::UnaryExpr(Token op, std::unique_ptr<Expr> expr)
+UnaryExpr::UnaryExpr(Token op, std::shared_ptr<Expr> expr)
     : operator_t(op), expression(std::move(expr)) {}
 
 std::any UnaryExpr::accept(ExprVisitor<std::any> &visitor) {

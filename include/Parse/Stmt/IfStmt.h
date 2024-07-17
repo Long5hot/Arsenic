@@ -10,13 +10,13 @@ namespace arsenic {
 
 class IfStmt : public Stmt {
 
-  std::unique_ptr<Expr> condition;
-  std::unique_ptr<Stmt> thenBranch;
-  std::unique_ptr<Stmt> elseBranch;
+  std::shared_ptr<Expr> condition;
+  std::shared_ptr<Stmt> thenBranch;
+  std::shared_ptr<Stmt> elseBranch;
 
 public:
-  IfStmt(std::unique_ptr<Expr> expr, std::unique_ptr<Stmt> thenBranch,
-         std::unique_ptr<Stmt> elseBranch);
+  IfStmt(std::shared_ptr<Expr> expr, std::shared_ptr<Stmt> thenBranch,
+         std::shared_ptr<Stmt> elseBranch);
 
   std::any accept(StmtVisitor<std::any> &visitor) override;
 

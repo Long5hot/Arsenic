@@ -2,7 +2,7 @@
 
 namespace arsenic {
 
-VarStmt::VarStmt(Token name, std::unique_ptr<Expr> initializer)
+VarStmt::VarStmt(Token name, std::shared_ptr<Expr> initializer)
     : name(name), initializerExpr(std::move(initializer)) {}
 
 std::any VarStmt::accept(StmtVisitor<std::any> &visitor) {

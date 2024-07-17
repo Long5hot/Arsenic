@@ -63,11 +63,11 @@ public:
 
   bool isEqual(const std::any &a, const std::any &b);
 
-  void interpret(std::vector<std::unique_ptr<Stmt>> &statements);
+  void interpret(std::vector<std::shared_ptr<Stmt>> &statements);
 
   void execute(Stmt &stmt);
 
-  void executeBlock(std::vector<std::unique_ptr<Stmt>> &statements,
+  void executeBlock(std::vector<std::shared_ptr<Stmt>> &statements,
                     Environment *env);
 
   Interpreter();

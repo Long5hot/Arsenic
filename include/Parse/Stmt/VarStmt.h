@@ -11,11 +11,11 @@ namespace arsenic {
 
 class VarStmt : public Stmt {
 
-  std::unique_ptr<Expr> initializerExpr;
+  std::shared_ptr<Expr> initializerExpr;
   Token name;
 
 public:
-  VarStmt(Token name, std::unique_ptr<Expr> initializer);
+  VarStmt(Token name, std::shared_ptr<Expr> initializer);
 
   std::any accept(StmtVisitor<std::any> &visitor) override;
 

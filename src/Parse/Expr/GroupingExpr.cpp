@@ -5,7 +5,7 @@
 
 namespace arsenic {
 
-GroupingExpr::GroupingExpr(std::unique_ptr<Expr> expression)
+GroupingExpr::GroupingExpr(std::shared_ptr<Expr> expression)
     : expression(std::move(expression)) {}
 
 std::any GroupingExpr::accept(ExprVisitor<std::any> &visitor) {

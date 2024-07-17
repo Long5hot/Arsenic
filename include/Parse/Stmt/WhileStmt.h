@@ -10,11 +10,11 @@ namespace arsenic {
 
 class WhileStmt : public Stmt {
 
-  std::unique_ptr<Expr> condition;
-  std::unique_ptr<Stmt> whileBody;
+  std::shared_ptr<Expr> condition;
+  std::shared_ptr<Stmt> whileBody;
 
 public:
-  WhileStmt(std::unique_ptr<Expr> condition, std::unique_ptr<Stmt> whileBody);
+  WhileStmt(std::shared_ptr<Expr> condition, std::shared_ptr<Stmt> whileBody);
 
   std::any accept(StmtVisitor<std::any> &visitor) override;
 

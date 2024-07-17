@@ -2,7 +2,7 @@
 
 namespace arsenic {
 
-PrintStmt::PrintStmt(std::unique_ptr<Expr> expr)
+PrintStmt::PrintStmt(std::shared_ptr<Expr> expr)
     : expression(std::move(expr)) {}
 
 std::any PrintStmt::accept(StmtVisitor<std::any> &visitor) {

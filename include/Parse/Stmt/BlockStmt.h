@@ -10,14 +10,14 @@
 namespace arsenic {
 
 class BlockStmt : public Stmt {
-  std::vector<std::unique_ptr<Stmt>> statements;
+  std::vector<std::shared_ptr<Stmt>> statements;
 
 public:
-  BlockStmt(std::vector<std::unique_ptr<Stmt>> stmts);
+  BlockStmt(std::vector<std::shared_ptr<Stmt>> stmts);
 
   std::any accept(StmtVisitor<std::any> &visitor) override;
 
-  std::vector<std::unique_ptr<Stmt>> &getStatements();
+  std::vector<std::shared_ptr<Stmt>> &getStatements();
 };
 
 } // namespace arsenic

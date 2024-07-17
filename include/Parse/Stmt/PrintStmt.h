@@ -9,10 +9,10 @@
 namespace arsenic {
 
 class PrintStmt : public Stmt {
-  std::unique_ptr<Expr> expression;
+  std::shared_ptr<Expr> expression;
 
 public:
-  PrintStmt(std::unique_ptr<Expr> expr);
+  PrintStmt(std::shared_ptr<Expr> expr);
 
   std::any accept(StmtVisitor<std::any> &visitor) override;
 

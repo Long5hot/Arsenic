@@ -3,8 +3,8 @@
 
 namespace arsenic {
 
-BinaryExpr::BinaryExpr(std::unique_ptr<Expr> left, Token op,
-                       std::unique_ptr<Expr> right)
+BinaryExpr::BinaryExpr(std::shared_ptr<Expr> left, Token op,
+                       std::shared_ptr<Expr> right)
     : left(std::move(left)), operator_t(op), right(std::move(right)) {}
 
 std::any BinaryExpr::accept(ExprVisitor<std::any> &visitor) {

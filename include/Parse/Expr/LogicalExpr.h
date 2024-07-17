@@ -10,12 +10,12 @@
 namespace arsenic {
 
 class LogicalExpr : public Expr {
-  std::unique_ptr<Expr> left;
-  std::unique_ptr<Expr> right;
+  std::shared_ptr<Expr> left;
+  std::shared_ptr<Expr> right;
   Token operator_t;
 
 public:
-  LogicalExpr(std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right);
+  LogicalExpr(std::shared_ptr<Expr> left, Token op, std::shared_ptr<Expr> right);
 
   std::any accept(ExprVisitor<std::any> &visitor) override;
 

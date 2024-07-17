@@ -2,7 +2,7 @@
 
 namespace arsenic {
 
-ExpressionStmt::ExpressionStmt(std::unique_ptr<Expr> expr)
+ExpressionStmt::ExpressionStmt(std::shared_ptr<Expr> expr)
     : expression(std::move(expr)) {}
 
 std::any ExpressionStmt::accept(StmtVisitor<std::any> &visitor) {

@@ -202,7 +202,7 @@ std::any Interpreter::visit(BlockStmt &stmt) {
   return {};
 }
 
-void Interpreter::executeBlock(std::vector<std::unique_ptr<Stmt>> &statements,
+void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>> &statements,
                                Environment *env) {
 
   Environment *prevEnvironment = this->environment;
@@ -227,7 +227,7 @@ std::any Interpreter::visit(IfStmt &stmt) {
   return {};
 }
 
-// void Interpreter::interpret(std::unique_ptr<Expr> &expression) {
+// void Interpreter::interpret(std::shared_ptr<Expr> &expression) {
 //   try {
 //     std::any value = evaluate(expression);
 //     std::cout << stringify(value) << std::endl;
@@ -236,9 +236,9 @@ std::any Interpreter::visit(IfStmt &stmt) {
 //   }
 // }
 
-void Interpreter::interpret(std::vector<std::unique_ptr<Stmt>> &statements) {
+void Interpreter::interpret(std::vector<std::shared_ptr<Stmt>> &statements) {
   try {
-    for (std::unique_ptr<Stmt> &statement : statements) {
+    for (std::shared_ptr<Stmt> &statement : statements) {
       execute(*statement);
     }
   } catch (RuntimeError *error) {

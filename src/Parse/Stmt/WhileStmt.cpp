@@ -2,8 +2,8 @@
 
 namespace arsenic {
 
-WhileStmt::WhileStmt(std::unique_ptr<Expr> condition,
-                     std::unique_ptr<Stmt> whileBody)
+WhileStmt::WhileStmt(std::shared_ptr<Expr> condition,
+                     std::shared_ptr<Stmt> whileBody)
     : condition(std::move(condition)), whileBody(std::move(whileBody)) {}
 
 std::any WhileStmt::accept(StmtVisitor<std::any> &visitor) {

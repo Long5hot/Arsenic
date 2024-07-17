@@ -88,12 +88,12 @@ void run(const char *MemoryBuffer) {
   Scanner scanner(MemoryBuffer);
 
   std::vector<Token> tokens = scanner.scanTokens();
-  std::unique_ptr<Parser> parser = std::make_unique<Parser>(tokens);
-  //  std::unique_ptr<Expr> expression = parser->parse();
+  std::shared_ptr<Parser> parser = std::make_shared<Parser>(tokens);
+  //  std::shared_ptr<Expr> expression = parser->parse();
   //
   Interpreter *interpreter = new Interpreter();
 
-  std::vector<std::unique_ptr<Stmt>> statements = parser->parse();
+  std::vector<std::shared_ptr<Stmt>> statements = parser->parse();
 
   //  interpreter->interpret(expression);
   interpreter->interpret(statements);

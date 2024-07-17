@@ -3,7 +3,7 @@
 
 namespace arsenic {
 
-AssignExpr::AssignExpr(Token name, std::unique_ptr<Expr> value)
+AssignExpr::AssignExpr(Token name, std::shared_ptr<Expr> value)
     : name(name), value(std::move(value)) {}
 
 std::any AssignExpr::accept(ExprVisitor<std::any> &visitor) {

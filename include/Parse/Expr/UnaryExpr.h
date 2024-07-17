@@ -11,10 +11,10 @@ namespace arsenic {
 class UnaryExpr : public Expr {
 
   Token operator_t;
-  std::unique_ptr<Expr> expression;
+  std::shared_ptr<Expr> expression;
 
 public:
-  UnaryExpr(Token op, std::unique_ptr<Expr> expr);
+  UnaryExpr(Token op, std::shared_ptr<Expr> expr);
 
   std::any accept(ExprVisitor<std::any> &visitor) override;
 
