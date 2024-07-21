@@ -36,3 +36,51 @@ and then
 ```sh
 cmake --build .
 ```
+
+Usage
+---
+
+Below program prints Fibonacci sequence till 20th number.
+
+```cpp
+
+fun fib(n) {
+  if (n <= 1)
+    return n;
+  return fib(n - 2) + fib(n - 1);
+}
+
+for (var i = 0; i < 20; i = i + 1) {
+  print fib(i);
+}
+```
+
+To run above code, do:
+```sh
+arsenic test.nic
+```
+will produce below result
+```
+0.000000
+1.000000
+1.000000
+2.000000
+3.000000
+5.000000
+8.000000
+13.000000
+21.000000
+34.000000
+55.000000
+89.000000
+144.000000
+233.000000
+377.000000
+610.000000
+987.000000
+1597.000000
+2584.000000
+4181.000000
+```
+
+
