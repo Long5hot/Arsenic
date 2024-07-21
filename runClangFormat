@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Function to run clang-format on applicable files in the current directory
+run_clang_format() {
+    echo "Running clang-format in $(pwd)"
+    # Find all files in the current directory, excluding specific files
+    find . -maxdepth 1 -type f ! -name "CMakeLists.txt" ! -name ".gitignore" ! -name "README.md" ! -name "runClangFormat" -exec clang-format -i {} \;
+}
+
+# Export the function so it can be used with find
+export -f run_clang_format
+
+# Recursively find all directories and run clang-format in each except the excluded ones
+find . -type d \( ! -path "./build*" ! -path "./.git*" ! -path "./test*" ! -path "./grammer*" \) -exec bash -c '
+    if [ "$(basename "{}")" != "test" ] && [ "$(basename "{}")" != "grammer" ]; then
+        cd "{}" && run_clang_format
+    fi
+' \;
+
+# Return to the initial directory
+cd "$OLDPWD"
+
