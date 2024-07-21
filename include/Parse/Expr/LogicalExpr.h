@@ -15,7 +15,8 @@ class LogicalExpr : public Expr {
   Token operator_t;
 
 public:
-  LogicalExpr(std::shared_ptr<Expr> left, Token op, std::shared_ptr<Expr> right);
+  LogicalExpr(std::shared_ptr<Expr> left, Token op,
+              std::shared_ptr<Expr> right);
 
   std::any accept(ExprVisitor<std::any> &visitor) override;
 

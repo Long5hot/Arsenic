@@ -49,6 +49,7 @@ bool Interpreter::isEqual(const std::any &a, const std::any &b) {
     return std::any_cast<bool>(a) == std::any_cast<bool>(b);
   if (a.type() == typeid(std::string))
     return std::any_cast<std::string>(a) == std::any_cast<std::string>(b);
+  return false;
 }
 
 std::string stringify(std::any &object) {
@@ -68,6 +69,9 @@ std::string stringify(std::any &object) {
   if (object.type() == typeid(std::string)) {
     return std::any_cast<std::string>(object);
   }
+
+  if (object.type() == typeid(std::shared_ptr<ArsenicFunction>))
+    return std::any_cast<std::shared_ptr<ArsenicFunction>>(object)->toString();
 
   return "";
 }
@@ -138,6 +142,36 @@ std::any Interpreter::visit(UnaryExpr &expr) {
   return nullptr;
 }
 
+// Investigate this code more.
+// evaluate(expr.getCallee()) returns std::any of VarExpr which is correct.
+// But somehow after evaluate call it becomes std::any of
+// std::shared_ptr<ArsenicFunction>> For moving ahead going with this. But need
+// to Investigate this more...
+
+std::any Interpreter::visit(CallExpr &expr) {
+
+  std::any callee = evaluate(expr.getCallee());
+
+  std::vector<std::any> arguments;
+
+  for (std::shared_ptr<Expr> &argument : expr.getArguments())
+    arguments.push_back(evaluate(*argument));
+
+  //  std::any tempfunction =
+  //  environment->get(std::any_cast<std::string>(callee));
+  std::shared_ptr<ArsenicCallable> function =
+      std::any_cast<std::shared_ptr<ArsenicFunction>>(callee);
+
+  if (arguments.size() != function->arity()) {
+    throw new RuntimeError(expr.getClosingParentheses(),
+                           "Expected " + std::to_string(function->arity()) +
+                               " arguments but got " +
+                               std::to_string(arguments.size()) + ".");
+  }
+
+  return function->call(*this, arguments);
+}
+
 std::any Interpreter::visit(BinaryExpr &expr) {
 
   std::any left = evaluate(expr.getLeftExpr());
@@ -150,7 +184,8 @@ std::any Interpreter::visit(BinaryExpr &expr) {
 
     if ((left.type() == typeid(std::string)) &&
         (right.type() == typeid(std::string)))
-      return std::any_cast<double>(left) + std::any_cast<double>(right);
+      return std::any_cast<std::string>(left) +
+             std::any_cast<std::string>(right);
 
     throw new RuntimeError(expr.getOpToken(),
                            "Operands must be two numbers or two strings.");
@@ -198,14 +233,15 @@ std::any Interpreter::visit(PrintStmt &stmt) {
 
 std::any Interpreter::visit(BlockStmt &stmt) {
 
-  executeBlock(stmt.getStatements(), new Environment(environment));
+  executeBlock(stmt.getStatements(),
+               std::make_shared<Environment>(environment));
   return {};
 }
 
 void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>> &statements,
-                               Environment *env) {
+                               std::shared_ptr<Environment> env) {
 
-  Environment *prevEnvironment = this->environment;
+  std::shared_ptr<Environment> prevEnvironment = this->environment;
 
   //  try {
   this->environment = env;
@@ -214,7 +250,6 @@ void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>> &statements,
     execute(*statement);
   //  }
   this->environment = prevEnvironment;
-  delete env;
 }
 
 std::any Interpreter::visit(IfStmt &stmt) {
@@ -227,14 +262,21 @@ std::any Interpreter::visit(IfStmt &stmt) {
   return {};
 }
 
-// void Interpreter::interpret(std::shared_ptr<Expr> &expression) {
-//   try {
-//     std::any value = evaluate(expression);
-//     std::cout << stringify(value) << std::endl;
-//   } catch (RuntimeError* error) {
-//     runtimeError(*error);
-//   }
-// }
+std::any Interpreter::visit(FunctionStmt &stmt) {
+
+  std::shared_ptr<ArsenicFunction> function =
+      std::make_shared<ArsenicFunction>(stmt, environment);
+  environment->define(stmt.getToken().getLexeme(), function);
+  return {};
+}
+
+std::any Interpreter::visit(ReturnStmt &stmt) {
+  std::any Value;
+  if (stmt.getExpressionValue() != nullptr)
+    Value = evaluate(*stmt.getExpressionValue());
+
+  throw std::make_shared<Return_Exception>(Value);
+}
 
 void Interpreter::interpret(std::vector<std::shared_ptr<Stmt>> &statements) {
   try {
@@ -246,10 +288,10 @@ void Interpreter::interpret(std::vector<std::shared_ptr<Stmt>> &statements) {
   }
 }
 
+std::shared_ptr<Environment> Interpreter::getGlobalEnvironment() {
+  return globals;
+}
+
 void Interpreter::execute(Stmt &stmt) { stmt.accept(*this); }
-
-Interpreter::Interpreter() : environment(new Environment()) {}
-
-Interpreter::~Interpreter() { delete environment; }
 
 } // namespace arsenic

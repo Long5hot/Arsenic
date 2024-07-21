@@ -5,7 +5,8 @@ namespace arsenic {
 
 Environment::Environment() : enclosing(nullptr) {}
 
-Environment::Environment(Environment *enclosing) : enclosing(enclosing) {}
+Environment::Environment(std::shared_ptr<Environment> enclosing)
+    : enclosing(enclosing) {}
 
 void Environment::define(std::string name, std::any value) {
   values.insert({name, value});
@@ -16,7 +17,7 @@ std::any Environment::get(Token name) {
     return search->second;
 
   if (enclosing != nullptr)
-    return enclosing->get(name);
+    return enclosing.get()->get(name);
 
   throw new RuntimeError(name,
                          "Undefined variable '" + name.getLexeme() + "'.");

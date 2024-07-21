@@ -9,6 +9,8 @@ class VarStmt;
 class BlockStmt;
 class IfStmt;
 class WhileStmt;
+class FunctionStmt;
+class ReturnStmt;
 
 template <typename R> class StmtVisitor {
 
@@ -21,6 +23,8 @@ public:
   virtual std::any visit(BlockStmt &) = 0;
   virtual std::any visit(IfStmt &) = 0;
   virtual std::any visit(WhileStmt &) = 0;
+  virtual std::any visit(FunctionStmt &) = 0;
+  virtual std::any visit(ReturnStmt &) = 0;
 };
 
 } // namespace arsenic

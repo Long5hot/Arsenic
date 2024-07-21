@@ -2,6 +2,7 @@
 #define __ENVIRONMENT__
 
 #include <any>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -12,11 +13,11 @@ namespace arsenic {
 class Environment {
 
   std::unordered_map<std::string, std::any> values;
-  Environment *enclosing;
+  std::shared_ptr<Environment> enclosing;
 
 public:
   Environment();
-  Environment(Environment *enclosing);
+  Environment(std::shared_ptr<Environment> enclosing);
 
   void define(std::string name, std::any value);
   std::any get(Token name);

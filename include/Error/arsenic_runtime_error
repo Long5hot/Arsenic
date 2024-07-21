@@ -22,6 +22,14 @@ public:
   std::string getLexemeString() { return token_t.getLexeme(); }
 };
 
+class Return_Exception {
+  std::any Value;
+
+public:
+  Return_Exception(std::any Value);
+  std::any getReturnValue();
+};
+
 extern void runtimeError(RuntimeError &error);
 
 } // namespace arsenic

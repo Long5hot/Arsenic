@@ -1,53 +1,57 @@
 ```
 
-program     → declaration* EOF ;
+program     → declaration *EOF;
 
-declaration → varDecl
-              | statement ;
+declaration → funDecl | varDecl | statement;
 
-statement   → exprStmt
-              | ifStmt
-              | printStmt
-              | whileStmt
-              | block ;
+funDecl     → "fun" function;
 
-block       → "{" declaration* "}" ;
+function    → IDENTIFIER "(" parameters ? ")" block;
 
-varDecl     → "var" IDENTIFIER ( "=" expression )? ";" ;
+parameters  → IDENTIFIER("," IDENTIFIER) *;
 
-exprStmt    → expression ";" ;
+statement   → exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt |
+              block;
 
-printStmt   → "print" expression ";" ;
+returnStmt  → "return" expression ? ";";
 
-whileStmt   → "while" "(" expression ")" statement ;
+block       → "{" declaration * "}";
 
-forStmt     → "for" "(" ( varDecl | exprStmt | ";" )
-               expression? ";"expression? ")" statement ;
+varDecl     → "var" IDENTIFIER("=" expression) ? ";";
 
-ifStmt      → "if" "(" expression ")" statement
-            ( "else" statement )? ;
+exprStmt    → expression ";";
+
+printStmt   → "print" expression ";";
+
+whileStmt   → "while" "(" expression ")" statement;
+
+forStmt     → "for" "("(varDecl | exprStmt | ";") expression ? ";" expression ? ")" statement;
+
+ifStmt      → "if" "(" expression ")" statement("else" statement)? ;
 
 expression  → assignment;
 
-assignment  → IDENTIFIER "=" assignment
-              | logic_or;
+assignment  → IDENTIFIER "=" assignment | logic_or;
 
-logic_or    → logic_and ( "or" logic_and )* ;
+logic_or    → logic_and("or" logic_and) *;
 
-logic_and   → equality ( "and" equality )* ;
+logic_and   → equality("and" equality) *;
 
-equality    → comparison ( ( "!=" | "==" ) comparison )* ;
+equality    → comparison(("!=" | "==") comparison) *;
 
-comparison  → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+comparison  → term((">" | ">=" | "<" | "<=") term) *;
 
-term        → factor ( ( "-" | "+" ) factor )* ;
+term        → factor(("-" | "+") factor) *;
 
-factor      → unary ( ( "/" | "*" ) unary )* ;
+factor      → unary(("/" | "*") unary) *;
 
-unary       → ( "!" | "-" ) unary
-              | primary ;
-primary     → "true" | "false" | "nil"
-              | NUMBER | STRING
-              | "(" expression ")"
-              | IDENTIFIER ;
+unary       → ("!" | "-") unary | call;
+
+call        → primary ( "(" arguments? ")" )* ;
+
+arguments   → expression("," expression) *;
+
+primary     → "true" | "false" | "nil" | NUMBER | STRING | "(" expression ")" |
+              IDENTIFIER;
+
 ```
