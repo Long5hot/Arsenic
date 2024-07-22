@@ -15,8 +15,8 @@ void errorReporting::error(Token token, const std::string &message) {
 }
 
 void errorReporting::report(int line, std::string where, std::string Message) {
-  std::cerr << "[line " << line << "]"
-            << " Error" << where << ": " << Message << std::endl;
+  std::cerr << red << "[line " << line << "]"
+            << " Error " << where << ": " << reset << Message << std::endl;
 
   HadError = true;
 }
