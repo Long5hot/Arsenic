@@ -4,7 +4,8 @@
 
 namespace arsenic {
 
-ArsenicFunction::ArsenicFunction(FunctionStmt declaration, std::shared_ptr<Environment> closure)
+ArsenicFunction::ArsenicFunction(FunctionStmt declaration,
+                                 std::shared_ptr<Environment> closure)
     : declaration(declaration), closure(closure) {}
 
 std::any ArsenicFunction::call(Interpreter interpreter,

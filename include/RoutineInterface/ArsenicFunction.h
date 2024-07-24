@@ -14,8 +14,10 @@ class ArsenicFunction : public ArsenicCallable {
 
   FunctionStmt declaration;
   std::shared_ptr<Environment> closure;
+
 public:
-  ArsenicFunction(FunctionStmt declaration, std::shared_ptr<Environment> closure);
+  ArsenicFunction(FunctionStmt declaration,
+                  std::shared_ptr<Environment> closure);
   std::any call(Interpreter interpreter,
                 std::vector<std::any> arguments) override;
   int arity() override;
