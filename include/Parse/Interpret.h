@@ -13,6 +13,7 @@
 #include <Parse/Expr/LogicalExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
+#include <Parse/Expr/DyadExpr.h>
 #include <Parse/Stmt/BlockStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/FunctionStmt.h>
@@ -25,6 +26,7 @@
 #include <RoutineInterface/ArsenicFunction.h>
 #include <any>
 #include <memory>
+#include <unordered_map>
 
 namespace arsenic {
 
@@ -32,49 +34,12 @@ class Interpreter : public ExprVisitor<std::any>, public StmtVisitor<std::any> {
 
   std::shared_ptr<Environment> globals = std::make_shared<Environment>();
   std::shared_ptr<Environment> environment = globals;
+  std::unordered_map<Dyad_expr, int, Dyad_expr_hash, Dyad_expr_equal> Locals;
 
 public:
-  std::any visit(LiteralExpr &expr);
-
-  std::any visit(GroupingExpr &expr);
-
-  std::any visit(UnaryExpr &expr);
-
-  std::any visit(BinaryExpr &expr);
-
-  std::any visit(ExpressionStmt &stmt);
-
-  std::any visit(PrintStmt &stmt);
-
-  std::any visit(VarStmt &stmt);
-
-  std::any visit(BlockStmt &stmt);
-
-  std::any visit(IfStmt &stmt);
-
-  std::any visit(WhileStmt &stmt);
-
-  std::any visit(FunctionStmt &stmt);
-
-  std::any visit(ReturnStmt &stmt);
-
-  std::any visit(VarExpr &stmt);
-
-  std::any visit(AssignExpr &expr);
-
-  std::any visit(LogicalExpr &expr);
-
-  std::any visit(CallExpr &expr);
-
-  std::any evaluate(Expr &expr);
-
   void checkNumberOperand(Token operator_t, const std::any &operand);
-
   void checkNumberOperands(Token operator_t, const std::any &left,
                            const std::any &right);
-
-  std::any isTruthy(const std::any &object);
-
   bool isEqual(const std::any &a, const std::any &b);
 
   void interpret(std::vector<std::shared_ptr<Stmt>> &statements);
@@ -84,7 +49,31 @@ public:
   void executeBlock(std::vector<std::shared_ptr<Stmt>> &statements,
                     std::shared_ptr<Environment> env);
 
+  void resolve(Dyad_expr expr, int DepthLevel);
+
+  std::any LookUpVariable(Token Name, const Dyad_expr expr);
+
   std::shared_ptr<Environment> getGlobalEnvironment();
+
+  std::any evaluate(Expr &expr);
+  std::any isTruthy(const std::any &object);
+
+  std::any visit(LiteralExpr &expr);
+  std::any visit(GroupingExpr &expr);
+  std::any visit(UnaryExpr &expr);
+  std::any visit(BinaryExpr &expr);
+  std::any visit(VarExpr &stmt);
+  std::any visit(AssignExpr &expr);
+  std::any visit(LogicalExpr &expr);
+  std::any visit(CallExpr &expr);
+  std::any visit(ExpressionStmt &stmt);
+  std::any visit(PrintStmt &stmt);
+  std::any visit(VarStmt &stmt);
+  std::any visit(BlockStmt &stmt);
+  std::any visit(IfStmt &stmt);
+  std::any visit(WhileStmt &stmt);
+  std::any visit(FunctionStmt &stmt);
+  std::any visit(ReturnStmt &stmt);
 };
 
 } // namespace arsenic

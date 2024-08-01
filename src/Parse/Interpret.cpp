@@ -85,7 +85,18 @@ std::any Interpreter::visit(GroupingExpr &expr) {
 }
 
 std::any Interpreter::visit(VarExpr &expr) {
-  return environment->get(expr.getToken());
+  // return environment->get(expr.getToken());
+  return LookUpVariable(expr.getToken(), expr);
+}
+
+std::any Interpreter::LookUpVariable(Token Name, const Dyad_expr expr) {
+
+//  if (Locals.find(expr) != Locals.end()) {
+//    int Distance = Locals[expr];
+//    return environment->getAt(Distance, Name.getLexeme());
+//  }
+
+  return globals->get(Name);
 }
 
 std::any Interpreter::visit(LogicalExpr &expr) {
@@ -121,9 +132,15 @@ std::any Interpreter::visit(WhileStmt &stmt) {
 }
 
 std::any Interpreter::visit(AssignExpr &expr) {
-  std::any value = evaluate(expr.getValue());
-  environment->assign(expr.getToken(), value);
-  return value;
+  std::any Value = evaluate(expr.getValue());
+  // environment->assign(expr.getToken(), value);
+  // std::shared_ptr<Expr> findObj = std::make_shared<AssignExpr>(expr);
+//  if (Locals.find(expr) != Locals.end()) {
+//    int Distance = Locals[expr];
+//    environment->assignAt(Distance, expr.getToken(), Value);
+//  }
+  globals->assign(expr.getToken(), Value);
+  return Value;
 }
 
 std::any Interpreter::visit(UnaryExpr &expr) {
@@ -276,6 +293,10 @@ std::any Interpreter::visit(ReturnStmt &stmt) {
     Value = evaluate(*stmt.getExpressionValue());
 
   throw std::make_shared<Return_Exception>(Value);
+}
+
+void Interpreter::resolve(Dyad_expr expr, int DepthLevel) {
+  Locals.insert({expr, DepthLevel});
 }
 
 void Interpreter::interpret(std::vector<std::shared_ptr<Stmt>> &statements) {

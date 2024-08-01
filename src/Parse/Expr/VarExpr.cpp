@@ -11,4 +11,8 @@ std::any VarExpr::accept(ExprVisitor<std::any> &visitor) {
 
 Token VarExpr::getToken() const { return name; }
 
+bool VarExpr::operator==(const VarExpr & obj) const {
+  return this->name.getLiteralValue() == obj.getToken().getLiteralValue();
+}
+
 } // namespace arsenic

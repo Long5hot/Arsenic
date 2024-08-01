@@ -16,6 +16,7 @@ class AssignExpr : public Expr {
 
 public:
   AssignExpr(Token name, std::shared_ptr<Expr> value);
+  bool operator==(const AssignExpr & obj) const;
   std::any accept(ExprVisitor<std::any> &visitor);
   Token getToken() const;
   Expr &getValue() const;

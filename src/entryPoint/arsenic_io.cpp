@@ -3,6 +3,7 @@
 #include <Lex/Lex.h>
 #include <Parse/Interpret.h>
 #include <Parse/Parse.h>
+#include <Resolver/Resolver.h>
 #include <cerrno>
 #include <fcntl.h>
 #include <iostream>
@@ -91,10 +92,16 @@ void run(const char *MemoryBuffer) {
   std::shared_ptr<Parser> parser = std::make_shared<Parser>(tokens);
   //  std::shared_ptr<Expr> expression = parser->parse();
   //
-  Interpreter *interpreter = new Interpreter();
+  std::shared_ptr<Interpreter> interpreter =
+      std::make_shared<Interpreter>(Interpreter());
 
   std::vector<std::shared_ptr<Stmt>> statements = parser->parse();
 
+  std::shared_ptr<Resolver> resolver = std::make_shared<Resolver>(interpreter);
+  resolver->resolve(statements);
+
+  if (arsenicError.hadError())
+    return;
   //  interpreter->interpret(expression);
   interpreter->interpret(statements);
 }

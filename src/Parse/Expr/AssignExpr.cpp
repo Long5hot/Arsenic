@@ -10,6 +10,10 @@ std::any AssignExpr::accept(ExprVisitor<std::any> &visitor) {
   return visitor.visit(*this);
 }
 
+bool AssignExpr::operator==(const AssignExpr & obj) const {
+  return this->name.getLiteralValue() == obj.getToken().getLiteralValue();
+}
+
 Token AssignExpr::getToken() const { return name; }
 
 Expr &AssignExpr::getValue() const { return *value; }

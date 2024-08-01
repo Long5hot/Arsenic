@@ -17,14 +17,14 @@ template <typename R> class StmtVisitor {
 public:
   virtual ~StmtVisitor() = default;
 
-  virtual std::any visit(ExpressionStmt &) = 0;
-  virtual std::any visit(PrintStmt &) = 0;
-  virtual std::any visit(VarStmt &) = 0;
-  virtual std::any visit(BlockStmt &) = 0;
-  virtual std::any visit(IfStmt &) = 0;
-  virtual std::any visit(WhileStmt &) = 0;
-  virtual std::any visit(FunctionStmt &) = 0;
-  virtual std::any visit(ReturnStmt &) = 0;
+  virtual R visit(ExpressionStmt &) = 0;
+  virtual R visit(PrintStmt &) = 0;
+  virtual R visit(VarStmt &) = 0;
+  virtual R visit(BlockStmt &) = 0;
+  virtual R visit(IfStmt &) = 0;
+  virtual R visit(WhileStmt &) = 0;
+  virtual R visit(FunctionStmt &) = 0;
+  virtual R visit(ReturnStmt &) = 0;
 };
 
 } // namespace arsenic

@@ -13,7 +13,7 @@ class VarExpr : public Expr {
 
 public:
   VarExpr(Token name);
-
+  bool operator==(const VarExpr & obj) const;
   std::any accept(ExprVisitor<std::any> &visitor) override;
 
   Token getToken() const;

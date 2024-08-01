@@ -10,8 +10,7 @@ std::any Return_Exception::getReturnValue() { return Value; }
 
 void runtimeError(RuntimeError &error) {
   std::cout << "\033[1;31m[line " << error.getLine() << "] Error: \033[0m"
-            << error.getLexemeString() << " " << error.getMessage()
-            << std::endl;
+            << error.getMessage() << std::endl;
 }
 
 } // namespace arsenic

@@ -1,5 +1,6 @@
 #include <Environment.h>
 #include <Error/arsenic_runtime_error>
+#include <memory>
 
 namespace arsenic {
 
@@ -7,6 +8,25 @@ Environment::Environment() : enclosing(nullptr) {}
 
 Environment::Environment(std::shared_ptr<Environment> enclosing)
     : enclosing(enclosing) {}
+
+void Environment::assignAt(int Distance, Token Name, std::any Value) {
+  ancestor(Distance)->values.insert_or_assign(Name.getLexeme(), Value);
+}
+
+std::any Environment::getAt(int Distance, std::string Name) {
+  return ancestor(Distance)->values.at(Name);
+}
+
+std::shared_ptr<Environment> Environment::ancestor(int Distance) {
+
+  std::shared_ptr<Environment> environment = shared_from_this();
+
+  for (int i = 0; i < Distance; ++i) {
+    environment = environment->enclosing;
+  }
+
+  return environment;
+}
 
 void Environment::define(std::string name, std::any value) {
   values.insert({name, value});

@@ -1,6 +1,8 @@
 #ifndef __EXPRVISITOR__
 #define __EXPRVISITOR__
 
+#include <variant>
+
 namespace arsenic {
 
 class BinaryExpr;
@@ -11,6 +13,8 @@ class VarExpr;
 class AssignExpr;
 class LogicalExpr;
 class CallExpr;
+
+using Dyad_expr = std::variant<VarExpr, AssignExpr>;
 
 template <typename R> class ExprVisitor {
 

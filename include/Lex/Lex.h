@@ -87,7 +87,7 @@ public:
   TokenType getType() { return type; }
 
   std::string getLexeme() { return lexeme; }
-  literal_variant getLiteralValue() { return literal; }
+  literal_variant getLiteralValue() const { return literal; }
   std::any getLiteralValueAny() {
     if (std::holds_alternative<std::string>(getLiteralValue()))
       return std::get<std::string>(getLiteralValue());
@@ -98,6 +98,23 @@ public:
   }
   int getLine() { return line; }
   int getFileLocation() { return location; }
+//  bool operator==(const Token &other) const {
+//    return type == other.type &&
+//           std::visit(
+//               [](const auto &lhs_literal, const auto &rhs_literal) {
+//                 return lhs_literal == rhs_literal;
+//               },
+//               literal, other.literal);
+//  }
+
+  bool operator==(const Token &other) const {
+        return type == other.type && 
+               lexeme == other.lexeme &&
+               std::visit([](const auto& lhs_literal, const auto& rhs_literal) -> bool {
+                   return lhs_literal == rhs_literal;
+               }, literal, other.literal);
+    }
+
 };
 
 class Scanner {
