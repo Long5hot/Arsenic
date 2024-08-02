@@ -50,6 +50,7 @@ public:
   std::shared_ptr<Stmt> whileStatement();
   std::shared_ptr<Stmt> forStatement();
   std::shared_ptr<Stmt> returnStatement();
+  std::shared_ptr<Stmt> classDeclaration();
   std::vector<std::shared_ptr<Stmt>> block();
   std::vector<std::shared_ptr<Stmt>> parse();
 };

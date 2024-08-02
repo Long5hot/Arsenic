@@ -11,6 +11,7 @@
 #include <Parse/Expr/VarExpr.h>
 #include <Parse/Parse.h>
 #include <Parse/Stmt/BlockStmt.h>
+#include <Parse/Stmt/ClassStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/FunctionStmt.h>
 #include <Parse/Stmt/IfStmt.h>
@@ -447,6 +448,8 @@ std::shared_ptr<Stmt> Parser::function(std::string routineKind) {
 std::shared_ptr<Stmt> Parser::declaration() {
 
   try {
+    if (match({CLASS}))
+      return classDeclaration();
     if (match({FUN}))
       return function("function");
     if (match({VAR}))
@@ -457,6 +460,21 @@ std::shared_ptr<Stmt> Parser::declaration() {
     synchronize();
     return nullptr;
   }
+}
+
+std::shared_ptr<Stmt> Parser::classDeclaration() {
+
+  Token name = consume(IDENTIFIER, "Expect class name.");
+  consume(LEFT_BRACE, "Expect '{' before class body.");
+
+  std::vector<std::shared_ptr<Stmt>> methods;
+
+  while (!check(RIGHT_BRACE) && !isAtEnd())
+    methods.push_back(function("class method"));
+
+  consume(RIGHT_BRACE, "Expect '}' after class body.");
+
+  return std::make_shared<ClassStmt>(name, std::move(methods));
 }
 
 std::shared_ptr<Stmt> Parser::varDeclaration() {

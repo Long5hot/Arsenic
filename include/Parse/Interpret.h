@@ -14,6 +14,7 @@
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
 #include <Parse/Stmt/BlockStmt.h>
+#include <Parse/Stmt/ClassStmt.h>
 #include <Parse/Stmt/ExpressionStmt.h>
 #include <Parse/Stmt/FunctionStmt.h>
 #include <Parse/Stmt/IfStmt.h>
@@ -22,7 +23,9 @@
 #include <Parse/Stmt/StmtVisitor.h>
 #include <Parse/Stmt/VarStmt.h>
 #include <Parse/Stmt/WhileStmt.h>
+#include <RoutineInterface/ArsenicClass.h>
 #include <RoutineInterface/ArsenicFunction.h>
+#include <RoutineInterface/ArsenicInstance.h>
 #include <any>
 #include <memory>
 
@@ -65,6 +68,8 @@ public:
   std::any visit(LogicalExpr &expr);
 
   std::any visit(CallExpr &expr);
+
+  std::any visit(ClassStmt &stmt);
 
   std::any evaluate(Expr &expr);
 

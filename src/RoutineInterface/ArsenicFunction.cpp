@@ -1,4 +1,5 @@
 #include <Error/arsenic_runtime_error>
+#include <Parse/Interpret.h>
 #include <RoutineInterface/ArsenicFunction.h>
 #include <memory>
 

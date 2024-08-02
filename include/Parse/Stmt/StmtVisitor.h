@@ -11,6 +11,7 @@ class IfStmt;
 class WhileStmt;
 class FunctionStmt;
 class ReturnStmt;
+class ClassStmt;
 
 template <typename R> class StmtVisitor {
 
@@ -25,6 +26,7 @@ public:
   virtual std::any visit(WhileStmt &) = 0;
   virtual std::any visit(FunctionStmt &) = 0;
   virtual std::any visit(ReturnStmt &) = 0;
+  virtual std::any visit(ClassStmt &) = 0;
 };
 
 } // namespace arsenic

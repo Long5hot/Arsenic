@@ -73,6 +73,9 @@ std::string stringify(std::any &object) {
   if (object.type() == typeid(std::shared_ptr<ArsenicFunction>))
     return std::any_cast<std::shared_ptr<ArsenicFunction>>(object)->toString();
 
+  if (object.type() == typeid(std::shared_ptr<ArsenicInstance>))
+    return std::any_cast<std::shared_ptr<ArsenicInstance>>(object)->toString();
+
   return "";
 }
 
@@ -142,12 +145,6 @@ std::any Interpreter::visit(UnaryExpr &expr) {
   return nullptr;
 }
 
-// Investigate this code more.
-// evaluate(expr.getCallee()) returns std::any of VarExpr which is correct.
-// But somehow after evaluate call it becomes std::any of
-// std::shared_ptr<ArsenicFunction>> For moving ahead going with this. But need
-// to Investigate this more...
-
 std::any Interpreter::visit(CallExpr &expr) {
 
   std::any callee = evaluate(expr.getCallee());
@@ -157,19 +154,21 @@ std::any Interpreter::visit(CallExpr &expr) {
   for (std::shared_ptr<Expr> &argument : expr.getArguments())
     arguments.push_back(evaluate(*argument));
 
-  //  std::any tempfunction =
-  //  environment->get(std::any_cast<std::string>(callee));
-  std::shared_ptr<ArsenicCallable> function =
-      std::any_cast<std::shared_ptr<ArsenicFunction>>(callee);
+  std::shared_ptr<ArsenicCallable> routine;
 
-  if (arguments.size() != function->arity()) {
+  if (callee.type() == typeid(std::shared_ptr<ArsenicFunction>))
+    routine = std::any_cast<std::shared_ptr<ArsenicFunction>>(callee);
+  else if (callee.type() == typeid(std::shared_ptr<ArsenicClass>))
+    routine = std::any_cast<std::shared_ptr<ArsenicClass>>(callee);
+
+  if (arguments.size() != routine->arity()) {
     throw new RuntimeError(expr.getClosingParentheses(),
-                           "Expected " + std::to_string(function->arity()) +
+                           "Expected " + std::to_string(routine->arity()) +
                                " arguments but got " +
                                std::to_string(arguments.size()) + ".");
   }
 
-  return function->call(*this, arguments);
+  return routine->call(*this, arguments);
 }
 
 std::any Interpreter::visit(BinaryExpr &expr) {
@@ -259,6 +258,15 @@ std::any Interpreter::visit(IfStmt &stmt) {
   else if (stmt.hasElseBranch())
     execute(stmt.getElseBranch());
 
+  return {};
+}
+
+std::any Interpreter::visit(ClassStmt &stmt) {
+
+  environment->define(stmt.getToken().getLexeme(), nullptr);
+  std::shared_ptr<ArsenicClass> a_class =
+      std::make_shared<ArsenicClass>(stmt.getToken().getLexeme());
+  environment->assign(stmt.getToken(), a_class);
   return {};
 }
 
