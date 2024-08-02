@@ -134,15 +134,14 @@ std::any Interpreter::visit(UnaryExpr &expr) {
   std::any rightNode = evaluate(expr.getExpression());
 
   switch (expr.getOpLexeme().getType()) {
-  case TokenType::MINUS: {
+  case TokenType::MINUS:
     checkNumberOperand(expr.getOpLexeme(), rightNode);
     return -std::any_cast<double>(rightNode);
-  }
   case TokenType::BANG:
     return !std::any_cast<bool>(isTruthy(rightNode));
+  default:
+    return nullptr;
   }
-
-  return nullptr;
 }
 
 std::any Interpreter::visit(CallExpr &expr) {
@@ -169,6 +168,16 @@ std::any Interpreter::visit(CallExpr &expr) {
   }
 
   return routine->call(*this, arguments);
+}
+
+std::any Interpreter::visit(GetExpr &expr) {
+
+  std::any object = evaluate(expr.getObject());
+  if (object.type() == typeid(std::shared_ptr<ArsenicInstance>))
+    return std::any_cast<std::shared_ptr<ArsenicInstance>>(object).get()->get(
+        expr.getToken());
+
+  throw new RuntimeError(expr.getToken(), "Only instances have properties.");
 }
 
 std::any Interpreter::visit(BinaryExpr &expr) {
@@ -214,6 +223,10 @@ std::any Interpreter::visit(BinaryExpr &expr) {
   case TokenType::STAR:
     checkNumberOperands(expr.getOpToken(), left, right);
     return std::any_cast<double>(left) * std::any_cast<double>(right);
+
+  default:
+    throw new RuntimeError(expr.getOpToken(),
+                           "Operand not valid for Binary Expression.");
   }
 }
 

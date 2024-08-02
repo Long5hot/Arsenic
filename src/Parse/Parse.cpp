@@ -4,6 +4,7 @@
 #include <Parse/Expr/BinaryExpr.h>
 #include <Parse/Expr/CallExpr.h>
 #include <Parse/Expr/Expr.h>
+#include <Parse/Expr/GetExpr.h>
 #include <Parse/Expr/GroupingExpr.h>
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/LogicalExpr.h>
@@ -184,8 +185,12 @@ std::shared_ptr<Expr> Parser::call() {
   std::shared_ptr<Expr> expr = primary();
 
   while (true) {
-    if (match({LEFT_PAREN})) {
+    if (match({TokenType::LEFT_PAREN})) {
       expr = finishCall(std::move(expr));
+    } else if (match({TokenType::DOT})) {
+      Token Name =
+          consume(TokenType::IDENTIFIER, "Expected property name after '.'.");
+      expr = std::make_shared<GetExpr>(Name, std::move(expr));
     } else
       break;
   }

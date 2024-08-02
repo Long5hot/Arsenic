@@ -8,6 +8,7 @@
 #include <Parse/Expr/CallExpr.h>
 #include <Parse/Expr/Expr.h>
 #include <Parse/Expr/ExprVisitor.h>
+#include <Parse/Expr/GetExpr.h>
 #include <Parse/Expr/GroupingExpr.h>
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/LogicalExpr.h>
@@ -68,6 +69,8 @@ public:
   std::any visit(LogicalExpr &expr);
 
   std::any visit(CallExpr &expr);
+
+  std::any visit(GetExpr &expr);
 
   std::any visit(ClassStmt &stmt);
 
