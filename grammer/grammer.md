@@ -2,22 +2,24 @@
 
 program     → declaration *EOF;
 
-declaration → funDecl | varDecl | statement;
+declaration → classDecl | funDecl | varDecl | statement;
+
+statement   → exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt |
+              block;
+
+classDecl   → "class" IDENTIFIER "{" function* "}" ;
 
 funDecl     → "fun" function;
+
+varDecl     → "var" IDENTIFIER("=" expression) ? ";";
 
 function    → IDENTIFIER "(" parameters ? ")" block;
 
 parameters  → IDENTIFIER("," IDENTIFIER) *;
 
-statement   → exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt |
-              block;
-
 returnStmt  → "return" expression ? ";";
 
 block       → "{" declaration * "}";
-
-varDecl     → "var" IDENTIFIER("=" expression) ? ";";
 
 exprStmt    → expression ";";
 
