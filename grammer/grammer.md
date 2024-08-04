@@ -33,7 +33,7 @@ ifStmt      → "if" "(" expression ")" statement("else" statement)? ;
 
 expression  → assignment;
 
-assignment  → IDENTIFIER "=" assignment | logic_or;
+assignment  → ( call "." )? IDENTIFIER "=" assignment | logic_or;
 
 logic_or    → logic_and("or" logic_and) *;
 

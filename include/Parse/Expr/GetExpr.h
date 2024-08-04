@@ -21,8 +21,10 @@ public:
   Token getToken() const;
 
   Expr &getObject();
+
+  std::shared_ptr<Expr> getObjectPtr();
 };
 
 } // namespace arsenic
 
-#endif
+#endif // __GETEXPR__

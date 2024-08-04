@@ -12,6 +12,7 @@ class AssignExpr;
 class LogicalExpr;
 class CallExpr;
 class GetExpr;
+class SetExpr;
 
 template <typename R> class ExprVisitor {
 
@@ -27,6 +28,7 @@ public:
   virtual R visit(LogicalExpr &) = 0;
   virtual R visit(CallExpr &) = 0;
   virtual R visit(GetExpr &) = 0;
+  virtual R visit(SetExpr &) = 0;
 };
 
 } // namespace arsenic

@@ -12,6 +12,7 @@
 #include <Parse/Expr/GroupingExpr.h>
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/LogicalExpr.h>
+#include <Parse/Expr/SetExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
 #include <Parse/Stmt/BlockStmt.h>
@@ -71,6 +72,8 @@ public:
   std::any visit(CallExpr &expr);
 
   std::any visit(GetExpr &expr);
+
+  std::any visit(SetExpr &expr);
 
   std::any visit(ClassStmt &stmt);
 

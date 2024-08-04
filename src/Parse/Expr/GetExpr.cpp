@@ -14,4 +14,6 @@ Token GetExpr::getToken() const { return name; }
 
 Expr &GetExpr::getObject() { return *object; }
 
+std::shared_ptr<Expr> GetExpr::getObjectPtr() { return object; }
+
 } // namespace arsenic

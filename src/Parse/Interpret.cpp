@@ -180,6 +180,19 @@ std::any Interpreter::visit(GetExpr &expr) {
   throw new RuntimeError(expr.getToken(), "Only instances have properties.");
 }
 
+std::any Interpreter::visit(SetExpr &expr) {
+
+  std::any Object = evaluate(expr.getObject());
+
+  if (Object.type() != typeid(std::shared_ptr<ArsenicInstance>))
+    throw new RuntimeError(expr.getToken(), "Only instances have fields.");
+
+  std::any Value = evaluate(expr.getValue());
+  std::any_cast<std::shared_ptr<ArsenicInstance>>(Object)->set(expr.getToken(),
+                                                               Value);
+  return Value;
+}
+
 std::any Interpreter::visit(BinaryExpr &expr) {
 
   std::any left = evaluate(expr.getLeftExpr());

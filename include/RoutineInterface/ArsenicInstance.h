@@ -26,6 +26,10 @@ public:
     throw new RuntimeError(Name,
                            "Undefined property '" + Name.getLexeme() + "'.");
   }
+
+  void set(Token Name, std::any Value) {
+    Fields.insert({Name.getLexeme(), Value});
+  }
 };
 
 } // namespace arsenic

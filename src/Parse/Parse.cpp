@@ -8,6 +8,7 @@
 #include <Parse/Expr/GroupingExpr.h>
 #include <Parse/Expr/LiteralExpr.h>
 #include <Parse/Expr/LogicalExpr.h>
+#include <Parse/Expr/SetExpr.h>
 #include <Parse/Expr/UnaryExpr.h>
 #include <Parse/Expr/VarExpr.h>
 #include <Parse/Parse.h>
@@ -75,6 +76,11 @@ std::shared_ptr<Expr> Parser::assignment() {
     if (VarExpr *var_expr = dynamic_cast<VarExpr *>(expr.get())) {
       return std::make_shared<AssignExpr>(var_expr->getToken(),
                                           std::move(value));
+    }
+
+    if (GetExpr *get_expr = dynamic_cast<GetExpr *>(expr.get())) {
+      return std::make_shared<SetExpr>(
+          get_expr->getToken(), get_expr->getObjectPtr(), std::move(value));
     }
 
     error(equals, "Invalid assignment target.");
