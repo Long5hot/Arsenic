@@ -64,7 +64,7 @@ arsenic test.nic
 
 Classes with basic Inheritance
 
-```
+```cpp
 class Doughnut {
   cook() {
   print "Fry until golden brown.";
