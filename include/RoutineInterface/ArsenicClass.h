@@ -2,6 +2,7 @@
 #define __ARSENICCLASS__
 
 #include <RoutineInterface/ArsenicCallable.h>
+#include <RoutineInterface/ArsenicFunction.h>
 #include <string>
 
 namespace arsenic {
@@ -9,13 +10,17 @@ namespace arsenic {
 class ArsenicClass : public ArsenicCallable {
 
   std::string name;
+  std::unordered_map<std::string, std::shared_ptr<ArsenicFunction>> Methods;
 
 public:
-  ArsenicClass(std::string name);
+  ArsenicClass(std::string name,
+               std::unordered_map<std::string, std::shared_ptr<ArsenicFunction>>
+                   methods);
   std::string toString();
   std::any call(Interpreter interpreter,
                 std::vector<std::any> arguments) override;
   int arity() override;
+  std::any findMethod(std::string Name);
 };
 
 } // namespace arsenic

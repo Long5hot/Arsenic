@@ -18,7 +18,7 @@ public:
   ClassStmt(Token name, std::vector<std::shared_ptr<Stmt>> methods);
   std::any accept(StmtVisitor<std::any> &visitor) override;
   Token getToken();
-  std::vector<std::shared_ptr<Stmt>> &getClassBody();
+  std::vector<std::shared_ptr<Stmt>> &getMethods();
 };
 
 } // namespace arsenic

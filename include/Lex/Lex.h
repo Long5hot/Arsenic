@@ -86,7 +86,7 @@ public:
 
   TokenType getType() { return type; }
 
-  std::string getLexeme() { return lexeme; }
+  std::string getLexeme() const { return lexeme; }
   literal_variant getLiteralValue() { return literal; }
   std::any getLiteralValueAny() {
     if (std::holds_alternative<std::string>(getLiteralValue()))

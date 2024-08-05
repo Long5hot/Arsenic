@@ -9,6 +9,22 @@ ArsenicFunction::ArsenicFunction(FunctionStmt declaration,
                                  std::shared_ptr<Environment> closure)
     : declaration(declaration), closure(closure) {}
 
+ArsenicFunction::ArsenicFunction(const ArsenicFunction &A_Function)
+    : declaration(A_Function.getFunctionDecl()),
+      closure(A_Function.getClousure()) {}
+//{
+//  this->declaration = A_Function.getFunctionDecl();
+//  this->closure = A_Function.getClousure();
+//}
+
+const FunctionStmt ArsenicFunction::getFunctionDecl() const {
+  return declaration;
+}
+
+const std::shared_ptr<Environment> ArsenicFunction::getClousure() const {
+  return closure;
+}
+
 std::any ArsenicFunction::call(Interpreter interpreter,
                                std::vector<std::any> arguments) {
 

@@ -19,11 +19,12 @@ public:
   FunctionStmt(Token name, std::vector<Token>,
                std::vector<std::shared_ptr<Stmt>> functionBody);
   FunctionStmt(FunctionStmt &);
+  FunctionStmt(const FunctionStmt &);
   std::any accept(StmtVisitor<std::any> &visitor) override;
   int parameterSize();
-  std::vector<Token> getParameters();
-  Token getToken();
-  std::vector<std::shared_ptr<Stmt>> &getFunctionBody();
+  std::vector<Token> getParameters() const;
+  Token getToken() const;
+  std::vector<std::shared_ptr<Stmt>> getFunctionBody() const;
 };
 
 } // namespace arsenic

@@ -92,7 +92,7 @@ public:
 
   void execute(Stmt &stmt);
 
-  void executeBlock(std::vector<std::shared_ptr<Stmt>> &statements,
+  void executeBlock(std::vector<std::shared_ptr<Stmt>> statements,
                     std::shared_ptr<Environment> env);
 
   std::shared_ptr<Environment> getGlobalEnvironment();

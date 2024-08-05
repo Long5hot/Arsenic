@@ -263,7 +263,7 @@ std::any Interpreter::visit(BlockStmt &stmt) {
   return {};
 }
 
-void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>> &statements,
+void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>> statements,
                                std::shared_ptr<Environment> env) {
 
   std::shared_ptr<Environment> prevEnvironment = this->environment;
@@ -290,8 +290,18 @@ std::any Interpreter::visit(IfStmt &stmt) {
 std::any Interpreter::visit(ClassStmt &stmt) {
 
   environment->define(stmt.getToken().getLexeme(), nullptr);
+  std::unordered_map<std::string, std::shared_ptr<ArsenicFunction>> Methods;
+
+  for (std::shared_ptr<Stmt> &method : stmt.getMethods()) {
+    std::shared_ptr<FunctionStmt> class_method =
+        std::dynamic_pointer_cast<FunctionStmt>(method);
+    std::shared_ptr<ArsenicFunction> function =
+        std::make_shared<ArsenicFunction>(*class_method, environment);
+    Methods.insert({class_method->getToken().getLexeme(), function});
+  }
+
   std::shared_ptr<ArsenicClass> a_class =
-      std::make_shared<ArsenicClass>(stmt.getToken().getLexeme());
+      std::make_shared<ArsenicClass>(stmt.getToken().getLexeme(), Methods);
   environment->assign(stmt.getToken(), a_class);
   return {};
 }

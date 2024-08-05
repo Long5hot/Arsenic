@@ -23,6 +23,10 @@ public:
     if (auto search = Fields.find(Name.getLexeme()); search != Fields.end())
       return search->second;
 
+    std::any Method = A_Class.findMethod(Name.getLexeme());
+    if (Method.type() == typeid(std::shared_ptr<ArsenicFunction>))
+      return Method;
+
     throw new RuntimeError(Name,
                            "Undefined property '" + Name.getLexeme() + "'.");
   }

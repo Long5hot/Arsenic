@@ -11,8 +11,6 @@ std::any ClassStmt::accept(StmtVisitor<std::any> &visitor) {
 
 Token ClassStmt::getToken() { return name; }
 
-std::vector<std::shared_ptr<Stmt>> &ClassStmt::getClassBody() {
-  return methods;
-}
+std::vector<std::shared_ptr<Stmt>> &ClassStmt::getMethods() { return methods; }
 
 } // namespace arsenic

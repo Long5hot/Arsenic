@@ -19,17 +19,21 @@ FunctionStmt::FunctionStmt(FunctionStmt &object)
   //  }
 }
 
+FunctionStmt::FunctionStmt(const FunctionStmt &object)
+    : name(object.getToken()), parameters(object.getParameters()),
+      functionBody(object.getFunctionBody()) {}
+
 std::any FunctionStmt::accept(StmtVisitor<std::any> &visitor) {
   return visitor.visit(*this);
 }
 
 int FunctionStmt::parameterSize() { return parameters.size(); }
 
-std::vector<Token> FunctionStmt::getParameters() { return parameters; }
+std::vector<Token> FunctionStmt::getParameters() const { return parameters; }
 
-Token FunctionStmt::getToken() { return name; }
+Token FunctionStmt::getToken() const { return name; }
 
-std::vector<std::shared_ptr<Stmt>> &FunctionStmt::getFunctionBody() {
+std::vector<std::shared_ptr<Stmt>> FunctionStmt::getFunctionBody() const {
   return functionBody;
 }
 
