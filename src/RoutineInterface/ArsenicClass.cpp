@@ -5,9 +5,9 @@
 namespace arsenic {
 
 ArsenicClass::ArsenicClass(
-    std::string name,
+    std::string name, std::shared_ptr<ArsenicClass> SuperClass,
     std::unordered_map<std::string, std::shared_ptr<ArsenicFunction>> Methods)
-    : name(name), Methods(Methods) {}
+    : name(name), SuperClass(SuperClass), Methods(Methods) {}
 
 std::string ArsenicClass::toString() { return name; }
 
@@ -26,6 +26,9 @@ std::any ArsenicClass::findMethod(std::string Name) {
 
   if (auto search = Methods.find(Name); search != Methods.end())
     return search->second;
+
+  if (SuperClass != nullptr)
+    return SuperClass->findMethod(Name);
 
   return nullptr;
 }

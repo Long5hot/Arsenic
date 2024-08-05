@@ -3,6 +3,7 @@
 
 #include <RoutineInterface/ArsenicCallable.h>
 #include <RoutineInterface/ArsenicFunction.h>
+#include <memory>
 #include <string>
 
 namespace arsenic {
@@ -10,10 +11,11 @@ namespace arsenic {
 class ArsenicClass : public ArsenicCallable {
 
   std::string name;
+  std::shared_ptr<ArsenicClass> SuperClass;
   std::unordered_map<std::string, std::shared_ptr<ArsenicFunction>> Methods;
 
 public:
-  ArsenicClass(std::string name,
+  ArsenicClass(std::string name, std::shared_ptr<ArsenicClass> SuperClass,
                std::unordered_map<std::string, std::shared_ptr<ArsenicFunction>>
                    methods);
   std::string toString();

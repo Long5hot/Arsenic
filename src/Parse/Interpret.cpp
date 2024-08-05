@@ -289,6 +289,16 @@ std::any Interpreter::visit(IfStmt &stmt) {
 
 std::any Interpreter::visit(ClassStmt &stmt) {
 
+  std::any SuperClass;
+
+  if (stmt.getSuperClass() != nullptr) {
+    SuperClass = evaluate(*stmt.getSuperClass());
+    if (SuperClass.type() != typeid(std::shared_ptr<ArsenicClass>)) {
+      throw new RuntimeError(stmt.getSuperClass()->getToken(),
+                             "Superclass must be a class.");
+    }
+  }
+
   environment->define(stmt.getToken().getLexeme(), nullptr);
   std::unordered_map<std::string, std::shared_ptr<ArsenicFunction>> Methods;
 
@@ -300,8 +310,14 @@ std::any Interpreter::visit(ClassStmt &stmt) {
     Methods.insert({class_method->getToken().getLexeme(), function});
   }
 
-  std::shared_ptr<ArsenicClass> a_class =
-      std::make_shared<ArsenicClass>(stmt.getToken().getLexeme(), Methods);
+  std::shared_ptr<ArsenicClass> a_class;
+  if (stmt.getSuperClass() == nullptr)
+    a_class = std::make_shared<ArsenicClass>(stmt.getToken().getLexeme(),
+                                             nullptr, Methods);
+  else
+    a_class = std::make_shared<ArsenicClass>(
+        stmt.getToken().getLexeme(),
+        std::any_cast<std::shared_ptr<ArsenicClass>>(SuperClass), Methods);
   environment->assign(stmt.getToken(), a_class);
   return {};
 }

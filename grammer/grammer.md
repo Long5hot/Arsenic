@@ -7,7 +7,7 @@ declaration → classDecl | funDecl | varDecl | statement;
 statement   → exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt |
               block;
 
-classDecl   → "class" IDENTIFIER "{" function* "}" ;
+classDecl   → "class" IDENTIFIER ("<" IDENTIFIER)? "{" function* "}" ;
 
 funDecl     → "fun" function;
 

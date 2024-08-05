@@ -1,0 +1,11 @@
+fun count_to_100000() {
+  var count = 0;
+  for (var i = 0; i < 100000; i = i + 1) {
+    count = count + 1;
+  }
+  return count;
+}
+
+var result = count_to_100000();
+print "Counted to: ";
+print result;

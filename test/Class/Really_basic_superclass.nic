@@ -1,0 +1,4 @@
+
+class SuperClass{}
+
+class Subclass < SuperClass {}
